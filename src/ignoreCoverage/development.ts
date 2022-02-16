@@ -1,1 +1,1 @@
-console.log("Starting Dev");
+console.log('Starting Dev');

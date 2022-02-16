@@ -26,7 +26,10 @@
     "url": "git+https://github.com/FireboltCasters/docker-github-reloader"
   },
   "keywords": [
-    "docker", "git", "restart", "ci"
+    "docker",
+    "git",
+    "restart",
+    "ci"
   ],
   "author": "Nils Baumgartner",
   "contributors": [

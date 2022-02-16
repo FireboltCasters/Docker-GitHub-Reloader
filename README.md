@@ -43,19 +43,18 @@ A template for creating npm packages
 
 1. Clone this repo or "use as template" and upload it to GitHub
 2. Setup GitHub Secrets
-2. Get your Sonar credentials
-3. Configure and run the setup script
-4. Configure Quality Gate in Sonar
-
+3. Get your Sonar credentials
+4. Configure and run the setup script
+5. Configure Quality Gate in Sonar
 
 ## 2. GitHub Secrets
 
 If not done by your organisation you will need to define the following secrets for your repository or your organisation:
+
 - GITHUB_TOKEN
 - NPM_TOKEN
 
 (Note: You will also need to add a secret for Sonar in step 3.)
-
 
 ## 3. Sonar
 
@@ -69,7 +68,6 @@ Therefore we need to get credentials for our project. Create a Sonar-Account if 
 - Follow Step 1: Add the secret to your repository
 - "Skip" step 2
 - Copy and paste the values of "sonar.projectKey" and "sonar.FireboltCasters" into the setup.json
-
 
 ## 4. Setup Script
 
@@ -115,17 +113,18 @@ npm run setup
 
 ## 5. Configure Quality Gate
 
-Push your current project to GitHub. After that you should see on GitHub under "Actions" that some GitHub-Actions are being executed. The Sonar-Action will firstly fail with: 
+Push your current project to GitHub. After that you should see on GitHub under "Actions" that some GitHub-Actions are being executed. The Sonar-Action will firstly fail with:
+
 ```
 ERROR: QUALITY GATE STATUS: FAILED
 ```
+
 This is because we haven't told Sonarcloud how it should measure the Quality Gate.
 
 - Visit your project at: https://sonarcloud.io/projects/
 - Select: "Set New Code definition"
 - Select the code definition for your match. We recommend: "Previous version"
 - Re-Upload your some minor change in your GitRepo to the master
-
 
 ## Contributors
 
