@@ -1,7 +1,7 @@
 {
-  "name": "@fireboltcasters/<packageName>",
+  "name": "docker-github-reloader",
   "version": "0.0.1",
-  "description": "<packageDescription>",
+  "description": "A package for restarting a docker container on updates of a git repo",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -23,17 +23,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FireboltCasters/npm-template.git"
+    "url": "git+https://github.com/FireboltCasters/docker-github-reloader"
   },
   "keywords": [
-    "npm-template"
+    "docker", "git", "restart", "ci"
   ],
-  "author": "Steffen Droppelmann",
+  "author": "Nils Baumgartner",
   "contributors": [
     {
       "name": "Nils Baumgartner",
       "email": "nilsbaumgartner1994@gmail.com",
-      "url": "https://github.com/FireboltCasters"
+      "url": "https://github.com/NilsBaumgartner1994"
     },
     {
       "name": "Steffen Droppelmann",
@@ -43,9 +43,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FireboltCasters/npm-template/issues"
+    "url": "https://github.com/FireboltCasters/docker-github-reloader/issues"
   },
-  "homepage": "https://github.com/FireboltCasters/npm-template#readme",
+  "homepage": "https://github.com/FireboltCasters/docker-github-reloader#readme",
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "@types/node": "^16.0.0",
