@@ -10,19 +10,25 @@ export default class Reloader {
   private static dockerHelper: DockerHelper;
   private static updateJob: any;
 
-  static async start(env: any){
-    try{
-      console.log("Welcome");
+  static async start(env: any) {
+    try {
+      console.log('Welcome');
       let envHelper = new EnvHelper(env);
       Reloader.gitHubHelper = new GitHubHelper(envHelper);
       await Reloader.gitHubHelper.prepare();
-      console.log("Watching now: "+Reloader.gitHubHelper.github_owner+"/"+Reloader.gitHubHelper.github_repo+" for updates");
+      console.log(
+        'Watching now: ' +
+          Reloader.gitHubHelper.github_owner +
+          '/' +
+          Reloader.gitHubHelper.github_repo +
+          ' for updates'
+      );
 
       Reloader.dockerHelper = new DockerHelper(envHelper);
 
-      console.log("Start Reloader");
+      console.log('Start Reloader');
       let schedule_time = envHelper.getScheduleTimeForChecks();
-      if(Reloader.isValidScheduleTime(schedule_time)){
+      if (Reloader.isValidScheduleTime(schedule_time)) {
         Reloader.tryCheckForUpdates();
         const checkJob = schedule.scheduleJob(schedule_time, async function () {
           await Reloader.tryCheckForUpdates();
@@ -31,7 +37,11 @@ export default class Reloader {
           await Reloader.sleep(5000);
         }
       } else {
-        console.log("[ERROR] No Valid "+EnvHelper.SCHEDULE_TIME_CHECK_FIELD+" was given");
+        console.log(
+          '[ERROR] No Valid ' +
+            EnvHelper.SCHEDULE_TIME_CHECK_FIELD +
+            ' was given'
+        );
       }
     } catch (err) {
       console.log('Infinite Loop breaked!');
@@ -43,9 +53,9 @@ export default class Reloader {
     return new Promise(resolve => setTimeout(resolve, ms, null));
   }
 
-  private static async tryCheckForUpdates(){
-    console.log("tryCheckForUpdates");
-    if(Reloader.isCheckAllowed()){
+  private static async tryCheckForUpdates() {
+    console.log('tryCheckForUpdates');
+    if (Reloader.isCheckAllowed()) {
       Reloader.checkRunning = true;
       let updateObject = await Reloader.gitHubHelper.getNextUpdateObject();
       if (!!updateObject && !!updateObject.sha) {
@@ -55,12 +65,12 @@ export default class Reloader {
     }
   }
 
-  private static isCheckAllowed(){
-    if(Reloader.updateRunning){
+  private static isCheckAllowed() {
+    if (Reloader.updateRunning) {
       //console.log("- Skipped check, because an update is running");
       return false;
     }
-    if(Reloader.checkRunning){
+    if (Reloader.checkRunning) {
       //console.log("- Skipped check, because a check is already running");
       return false;
     }
@@ -111,8 +121,8 @@ export default class Reloader {
     }
   }
 
-  private static async handleUpdate(commit_id: any){
-    console.log("Handle Update");
+  private static async handleUpdate(commit_id: any) {
+    console.log('Handle Update');
     await Reloader.dockerHelper.stop();
     await Reloader.gitHubHelper.pullRepo(commit_id);
     Reloader.gitHubHelper.setCurrentCommitId(commit_id);
