@@ -4,15 +4,18 @@ export default class EnvHelper {
   static readonly GITHUB_REPO_FIELD = 'GITHUB_REPO';
   static readonly GITHUB_BRANCH_FIELD = 'GITHUB_BRANCH';
 
-  static readonly SCHEDULE_TIME_CHECK_FIELD = "SCHEDULE_TIME_CHECK";
-  static readonly SCHEDULE_TIME_UPDATE_FIELD = "SCHEDULE_TIME_STATIC_UPDATE"; //TODO implement logic
-  static readonly GITHUB_AUTH_PERSONAL_ACCESS_TOKEN_FIELD = "GITHUB_AUTH_PERSONAL_ACCESS_TOKEN";
-  static readonly GITHUB_PROJECT_OWNER_FIELD = "GITHUB_PROJECT_OWNER";
-  static readonly GITHUB_PROJECT_REPO_FIELD = "GITHUB_PROJECT_REPO";
-  static readonly FOLDER_PATH_TO_PROJECT_FIELD = "FOLDER_PATH_TO_PROJECT";
-  static readonly FOLDER_PATH_TO_GITHUB_REPO_FIELD = "FOLDER_PATH_TO_GITHUB_REPO";
-  static readonly FOLDER_PATH_TO_DOCKER_PROJECT_FIELD = "FOLDER_PATH_TO_DOCKER_PROJECT";
-  static readonly DOCKER_PROJECT_PREPARE_FIELD = "DOCKER_PROJECT_PREPARE";
+  static readonly SCHEDULE_TIME_CHECK_FIELD = 'SCHEDULE_TIME_CHECK';
+  static readonly SCHEDULE_TIME_UPDATE_FIELD = 'SCHEDULE_TIME_STATIC_UPDATE'; //TODO implement logic
+  static readonly GITHUB_AUTH_PERSONAL_ACCESS_TOKEN_FIELD =
+    'GITHUB_AUTH_PERSONAL_ACCESS_TOKEN';
+  static readonly GITHUB_PROJECT_OWNER_FIELD = 'GITHUB_PROJECT_OWNER';
+  static readonly GITHUB_PROJECT_REPO_FIELD = 'GITHUB_PROJECT_REPO';
+  static readonly FOLDER_PATH_TO_PROJECT_FIELD = 'FOLDER_PATH_TO_PROJECT';
+  static readonly FOLDER_PATH_TO_GITHUB_REPO_FIELD =
+    'FOLDER_PATH_TO_GITHUB_REPO';
+  static readonly FOLDER_PATH_TO_DOCKER_PROJECT_FIELD =
+    'FOLDER_PATH_TO_DOCKER_PROJECT';
+  static readonly DOCKER_PROJECT_PREPARE_FIELD = 'DOCKER_PROJECT_PREPARE';
 
   static readonly CUSTOM_COMMAND_DOCKER_STOP_FIELD =
     'CUSTOM_COMMAND_DOCKER_STOP'; //TODO implement logic
@@ -53,8 +56,11 @@ export default class EnvHelper {
     return this.env[EnvHelper.SCHEDULE_TIME_CHECK_FIELD] || '0 */5 * * * *';
   }
 
-  getFolderPathToProject(){
-    return this.env[EnvHelper.FOLDER_PATH_TO_PROJECT_FIELD] || "/Users/nbaumgartner/Documents/GitHub/RocketMealsBackend";
+  getFolderPathToProject() {
+    return (
+      this.env[EnvHelper.FOLDER_PATH_TO_PROJECT_FIELD] ||
+      '/Users/nbaumgartner/Documents/GitHub/RocketMealsBackend'
+    );
   }
 
   /**
