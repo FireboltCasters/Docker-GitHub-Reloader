@@ -1,5 +1,8 @@
-
 export default class EnvHelper {
+  static readonly SCHEDULE_TIME_FIELD = 'SCHEDULE_TIME';
+  static readonly GITHUB_OWNER_FIELD = 'GITHUB_OWNER';
+  static readonly GITHUB_REPO_FIELD = 'GITHUB_REPO';
+  static readonly GITHUB_BRANCH_FIELD = 'GITHUB_BRANCH';
 
   static readonly SCHEDULE_TIME_CHECK_FIELD = "SCHEDULE_TIME_CHECK";
   static readonly SCHEDULE_TIME_UPDATE_FIELD = "SCHEDULE_TIME_STATIC_UPDATE"; //TODO implement logic
@@ -72,7 +75,7 @@ export default class EnvHelper {
     return this.env[EnvHelper.GITHUB_PROJECT_REPO_FIELD];
   }
 
-  getGitHubBranchName(){
+  getGitHubBranchName() {
     return this.env[EnvHelper.GITHUB_BRANCH_FIELD] || undefined;
   }
 

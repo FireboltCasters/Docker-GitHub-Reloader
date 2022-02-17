@@ -1,8 +1,7 @@
-import EnvHelper from "./EnvHelper";
 import ExecHelper from "./ExecHelper";
+import EnvHelper from './EnvHelper';
 
 export default class DockerHelper {
-
   private readonly pathToDockerProject: any;
   private readonly runPrepare: boolean;
 

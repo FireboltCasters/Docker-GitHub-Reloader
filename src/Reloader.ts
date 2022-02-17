@@ -1,10 +1,9 @@
-import schedule from "node-schedule";
-import GitHubHelper from "./GitHubHelper";
-import DockerHelper from "./DockerHelper";
-import EnvHelper from "./EnvHelper";
+import schedule from 'node-schedule';
+import GitHubHelper from './GitHubHelper';
+import DockerHelper from './DockerHelper';
+import EnvHelper from './EnvHelper';
 
 export default class Reloader {
-
   private static checkRunning = false;
   private static updateRunning = false;
   private static gitHubHelper: GitHubHelper;
@@ -25,17 +24,17 @@ export default class Reloader {
       let schedule_time = envHelper.getScheduleTimeForChecks();
       if(Reloader.isValidScheduleTime(schedule_time)){
         Reloader.tryCheckForUpdates();
-        const checkJob = schedule.scheduleJob(schedule_time, async function(){
-            await Reloader.tryCheckForUpdates();
+        const checkJob = schedule.scheduleJob(schedule_time, async function () {
+          await Reloader.tryCheckForUpdates();
         });
-        while(true){
+        while (true) {
           await Reloader.sleep(5000);
         }
       } else {
         console.log("[ERROR] No Valid "+EnvHelper.SCHEDULE_TIME_CHECK_FIELD+" was given");
       }
-    } catch (err){
-      console.log("Infinite Loop breaked!");
+    } catch (err) {
+      console.log('Infinite Loop breaked!');
       console.log(err);
     }
   }
@@ -68,41 +67,44 @@ export default class Reloader {
     return true;
   }
 
-  private static async planOrRunUpdate(updateObject: any){
+  private static async planOrRunUpdate(updateObject: any) {
     let commit_id = updateObject.sha;
     let schedule_update_time = updateObject.schedule_update_time;
-    if(Reloader.isValidScheduleTime(schedule_update_time)){
-      console.log("Update planed for: "+schedule_update_time);
-      Reloader.updateJob = schedule.scheduleJob(schedule_update_time, async function(){
-        await Reloader.tryUpdating(commit_id);
-        Reloader.updateJob = null; //reset updateJob
-      });
+    if (Reloader.isValidScheduleTime(schedule_update_time)) {
+      console.log('Update planed for: ' + schedule_update_time);
+      Reloader.updateJob = schedule.scheduleJob(
+        schedule_update_time,
+        async function () {
+          await Reloader.tryUpdating(commit_id);
+          Reloader.updateJob = null; //reset updateJob
+        }
+      );
     } else {
       let startUpdate = true;
-      if(!!Reloader.updateJob){
-        console.log("A planed job will be canceled");
+      if (!!Reloader.updateJob) {
+        console.log('A planed job will be canceled');
         let jobCancelSuccess = Reloader.updateJob.cancel(); //check if cancel was successfull;
-        if(!startUpdate){
-          console.log("Update Job could not be canceled");
+        if (!startUpdate) {
+          console.log('Update Job could not be canceled');
         }
         startUpdate = jobCancelSuccess;
       }
-      if(startUpdate){
+      if (startUpdate) {
         await Reloader.tryUpdating(commit_id);
       }
     }
   }
 
-  private static isUpdateAllowed(){
-    if(Reloader.updateRunning){
-      console.log("Skipped update! An update is already running");
+  private static isUpdateAllowed() {
+    if (Reloader.updateRunning) {
+      console.log('Skipped update! An update is already running');
       return false;
     }
     return true;
   }
 
-  private static async tryUpdating(commit_id: any){
-    if(Reloader.isUpdateAllowed()){
+  private static async tryUpdating(commit_id: any) {
+    if (Reloader.isUpdateAllowed()) {
       Reloader.updateRunning = true;
       await Reloader.handleUpdate(commit_id);
       Reloader.updateRunning = false;
@@ -118,10 +120,10 @@ export default class Reloader {
     await Reloader.dockerHelper.start();
   }
 
-  private static isValidScheduleTime(time: any){
-    let testTime = time+"";
-    let splits = testTime.split(" ");
-    return splits.length===6;
+  private static isValidScheduleTime(time: any) {
+    let testTime = time + '';
+    let splits = testTime.split(' ');
+    return splits.length === 6;
   }
 
   /**
@@ -135,5 +137,4 @@ export default class Reloader {
    │    └──────────────────── minute (0 - 59)
    └───────────────────────── second (0 - 59, OPTIONAL)
    */
-
 }
