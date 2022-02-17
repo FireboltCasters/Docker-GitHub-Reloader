@@ -1,5 +1,7 @@
-import Example from '../Example';
+/**
+import Reloader from '../Example';
 
 test('Example Test', async () => {
-  expect(Example.multiply(3, 4)).toBe(12);
+  expect(Reloader.multiply(3, 4)).toBe(12);
 });
+*/

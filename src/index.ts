@@ -1,4 +1,4 @@
 /* istanbul ignore file */
-import Example from './Example';
+import Reloader from './Reloader';
 
-export {Example};
+export {Reloader};

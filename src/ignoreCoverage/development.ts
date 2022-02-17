@@ -1,1 +1,3 @@
-console.log('Starting Dev');
+import {Reloader} from "../index";
+
+Reloader.start(null);
