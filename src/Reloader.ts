@@ -13,12 +13,16 @@ export default class Reloader {
 
   static async start(env: any){
     try{
+      console.log("Welcome");
       let envHelper = new EnvHelper(env);
       Reloader.gitHubHelper = new GitHubHelper(envHelper);
+      await Reloader.gitHubHelper.prepare();
+      console.log("Watching now: "+Reloader.gitHubHelper.github_owner+"/"+Reloader.gitHubHelper.github_repo+" for updates");
+
       Reloader.dockerHelper = new DockerHelper(envHelper);
-      
-      console.log("Start Reloder");
-      let schedule_time = envHelper.getScheduleTime();
+
+      console.log("Start Reloader");
+      let schedule_time = envHelper.getScheduleTimeForChecks();
       if(Reloader.isValidScheduleTime(schedule_time)){
         Reloader.tryCheckForUpdates();
         const checkJob = schedule.scheduleJob(schedule_time, async function(){
@@ -28,7 +32,7 @@ export default class Reloader {
           await Reloader.sleep(5000);
         }
       } else {
-        console.log("[ERROR] No Valid "+EnvHelper.SCHEDULE_TIME_FIELD+" was given");
+        console.log("[ERROR] No Valid "+EnvHelper.SCHEDULE_TIME_CHECK_FIELD+" was given");
       }
     } catch (err){
       console.log("Infinite Loop breaked!");
@@ -41,6 +45,7 @@ export default class Reloader {
   }
 
   private static async tryCheckForUpdates(){
+    console.log("tryCheckForUpdates");
     if(Reloader.isCheckAllowed()){
       Reloader.checkRunning = true;
       let updateObject = await Reloader.gitHubHelper.getNextUpdateObject();
@@ -53,11 +58,11 @@ export default class Reloader {
 
   private static isCheckAllowed(){
     if(Reloader.updateRunning){
-      console.log("- Skipped check, because an update is running");
+      //console.log("- Skipped check, because an update is running");
       return false;
     }
     if(Reloader.checkRunning){
-      console.log("- Skipped check, because a check is already running");
+      //console.log("- Skipped check, because a check is already running");
       return false;
     }
     return true;
@@ -106,10 +111,11 @@ export default class Reloader {
 
   private static async handleUpdate(commit_id: any){
     console.log("Handle Update");
-    await Reloader.dockerHelper.stopContainer();
+    await Reloader.dockerHelper.stop();
     await Reloader.gitHubHelper.pullRepo(commit_id);
     Reloader.gitHubHelper.setCurrentCommitId(commit_id);
-    await Reloader.dockerHelper.startContainer();
+    await Reloader.dockerHelper.prepare();
+    await Reloader.dockerHelper.start();
   }
 
   private static isValidScheduleTime(time: any){
