@@ -9,7 +9,6 @@ export default class EnvHelper {
   static readonly GITHUB_AUTH_PERSONAL_ACCESS_TOKEN_FIELD = "GITHUB_AUTH_PERSONAL_ACCESS_TOKEN";
   static readonly GITHUB_PROJECT_OWNER_FIELD = "GITHUB_PROJECT_OWNER";
   static readonly GITHUB_PROJECT_REPO_FIELD = "GITHUB_PROJECT_REPO";
-  static readonly GITHUB_BRANCH_FIELD = "GITHUB_BRANCH";
   static readonly FOLDER_PATH_TO_PROJECT_FIELD = "FOLDER_PATH_TO_PROJECT";
   static readonly FOLDER_PATH_TO_GITHUB_REPO_FIELD = "FOLDER_PATH_TO_GITHUB_REPO";
   static readonly FOLDER_PATH_TO_DOCKER_PROJECT_FIELD = "FOLDER_PATH_TO_DOCKER_PROJECT";
@@ -52,7 +51,7 @@ export default class EnvHelper {
   }
 
   getFolderPathToProject(){
-    return this.env[EnvHelper.FOLDER_PATH_TO_PROJECT_FIELD] || "/Users/nbaumgartner/Documents/GitHub/SSO-Stud.IP-UOS";
+    return this.env[EnvHelper.FOLDER_PATH_TO_PROJECT_FIELD] || "/Users/nbaumgartner/Documents/GitHub/RocketMealsBackend";
   }
 
   /**
