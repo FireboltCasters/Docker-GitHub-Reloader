@@ -4,6 +4,7 @@ import DockerHelper from './DockerHelper';
 import EnvHelper from './EnvHelper';
 
 export default class Reloader {
+  public static agent = "docker-github-reloader v0.0.4";
   private static checkRunning = false;
   private static updateRunning = false;
   private static repositoryHelper: RepositoryManagementHelper;

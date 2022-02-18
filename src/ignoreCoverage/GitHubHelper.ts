@@ -1,10 +1,10 @@
 import EnvHelper from './EnvHelper';
 import {Octokit} from '@octokit/rest';
 // @ts-ignore
-import myPackage from '../../package.json';
 import ExecHelper from './ExecHelper';
 import RepositoryManagementInterface from './RepositoryManagementInterface';
 import ScheduleCommentHelper from './ScheduleCommentHelper';
+import Reloader from "./Reloader";
 
 export default class GitHubHelper implements RepositoryManagementInterface {
   static ENV_NAME = 'GitHub';
@@ -31,7 +31,7 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     this.git_username = env.getGitAuthUsername();
     this.github_branch = env.getGitHubBranchName();
 
-    let userAgent = myPackage.name + ' v' + myPackage.version;
+    let userAgent = Reloader.agent;
     console.log(userAgent);
     this.octokit = new Octokit({
       auth: env.getGitHubAuthToken(),
