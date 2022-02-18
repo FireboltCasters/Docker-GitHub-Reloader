@@ -15,7 +15,7 @@ export default class DockerHelper {
     return await this.stopDockerCompose();
   }
 
-  async isDockerComposeRunning(): Promise<boolean>{
+  async isDockerComposeRunning(): Promise<boolean> {
     console.log('-- isDockerComposeRunning start');
     let commandToStopDocker = 'docker ps';
     try {
@@ -26,7 +26,7 @@ export default class DockerHelper {
     } catch (err) {
       if (!!err && !!err.error) {
         let errorMessage = err.error.toString();
-        if(errorMessage.includes("Cannot connect to the Docker daemon")){
+        if (errorMessage.includes('Cannot connect to the Docker daemon')) {
           return false;
         }
       }

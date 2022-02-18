@@ -18,7 +18,7 @@ export default class Reloader {
       await Reloader.repositoryHelper.prepare();
       console.log(
         'Watching now: ' +
-          await Reloader.repositoryHelper.getWatchingRepositoryName() +
+          (await Reloader.repositoryHelper.getWatchingRepositoryName()) +
           ' for updates'
       );
 
@@ -59,7 +59,7 @@ export default class Reloader {
   }
 
   private static async tryCheckForUpdates() {
-    console.log('tryCheckForUpdates at '+ new Date());
+    console.log('tryCheckForUpdates at ' + new Date());
     if (Reloader.isCheckAllowed()) {
       Reloader.checkRunning = true;
       let updateObject = await Reloader.repositoryHelper.getNextUpdateObject();

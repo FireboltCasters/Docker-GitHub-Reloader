@@ -3,13 +3,11 @@ import {Octokit} from '@octokit/rest';
 // @ts-ignore
 import myPackage from '../../package.json';
 import ExecHelper from './ExecHelper';
-import RepositoryManagementInterface from "./RepositoryManagementInterface";
+import RepositoryManagementInterface from './RepositoryManagementInterface';
 
-export default class ScheduleCommentHelper{
-
+export default class ScheduleCommentHelper {
   //TODO maybe add author_name or other things to filter for
   public static getScheduleUpdateTimeFromMessage(message: any): any {
-
     /** return SCHEDULE TIME AS STRING
      *    *    *    *    *    *
      ┬    ┬    ┬    ┬    ┬    ┬
@@ -30,5 +28,4 @@ export default class ScheduleCommentHelper{
 
     return undefined;
   }
-
 }

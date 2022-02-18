@@ -3,11 +3,11 @@ import {Octokit} from '@octokit/rest';
 // @ts-ignore
 import myPackage from '../../package.json';
 import ExecHelper from './ExecHelper';
-import RepositoryManagementInterface from "./RepositoryManagementInterface";
-import ScheduleCommentHelper from "./ScheduleCommentHelper";
+import RepositoryManagementInterface from './RepositoryManagementInterface';
+import ScheduleCommentHelper from './ScheduleCommentHelper';
 
-export default class GitHubHelper implements RepositoryManagementInterface{
-  static ENV_NAME = "GitHub";
+export default class GitHubHelper implements RepositoryManagementInterface {
+  static ENV_NAME = 'GitHub';
 
   static MOCK = false;
 
@@ -41,7 +41,9 @@ export default class GitHubHelper implements RepositoryManagementInterface{
 
   async prepare() {
     if (!this.github_owner || !this.github_repo) {
-      let informations = await GitHubHelper.getRepoInformations(this.path_to_github_project);
+      let informations = await GitHubHelper.getRepoInformations(
+        this.path_to_github_project
+      );
       if (!this.github_owner) {
         this.github_owner = informations.owner;
       }
@@ -49,11 +51,11 @@ export default class GitHubHelper implements RepositoryManagementInterface{
         this.github_repo = informations.repo;
       }
     }
-    return (!!this.github_owner && !!this.github_repo);
+    return !!this.github_owner && !!this.github_repo;
   }
 
-  async getWatchingRepositoryName(): Promise<string>{
-    return this.github_owner+"/"+this.github_repo;
+  async getWatchingRepositoryName(): Promise<string> {
+    return this.github_owner + '/' + this.github_repo;
   }
 
   async getNextUpdateObject(): Promise<{sha: any; schedule_update_time: any}> {
@@ -71,7 +73,7 @@ export default class GitHubHelper implements RepositoryManagementInterface{
     return answer;
   }
 
-  async downloadNewUpdate(commit_id: string): Promise<boolean>{
+  async downloadNewUpdate(commit_id: string): Promise<boolean> {
     return await this.pullRepo(commit_id);
   }
 
@@ -80,7 +82,10 @@ export default class GitHubHelper implements RepositoryManagementInterface{
   }
 
   private isDifferentCommit(latest_commit: any) {
-    return GitHubHelper.isDifferentCommit(latest_commit, this.current_commit_id);
+    return GitHubHelper.isDifferentCommit(
+      latest_commit,
+      this.current_commit_id
+    );
   }
 
   public static isDifferentCommit(latest_commit: any, current_commit_id: any) {
@@ -152,38 +157,52 @@ export default class GitHubHelper implements RepositoryManagementInterface{
   }
 
   async pullRepo(commit_id: any) {
-    let success = await GitHubHelper.pullRepoRaw(commit_id, this.path_to_github_project, this.git_token, this.git_username);
-    if(success){
-      this.setCurrentCommitId(commit_id)
+    let success = await GitHubHelper.pullRepoRaw(
+      commit_id,
+      this.path_to_github_project,
+      this.git_token,
+      this.git_username
+    );
+    if (success) {
+      this.setCurrentCommitId(commit_id);
     }
     return success;
   }
 
-  public static async pullRepoRaw(commit_id: any, path_to_github_project: string, token: any, username: any) {
+  public static async pullRepoRaw(
+    commit_id: any,
+    path_to_github_project: string,
+    token: any,
+    username: any
+  ) {
     console.log('-- pullRepo start');
 
     let commandToPull = 'git pull';
 
     if (!!token) {
-      let commandToSetCredentials = "";
+      let commandToSetCredentials = '';
       //TODO this can be done nicer
-      if(!!username){
+      if (!!username) {
         commandToSetCredentials =
-            'git -c credential.helper=\'!f() { echo "password=' +
-            token +
-            '"; echo "username='+ username +'"; }; f\' fetch origin';
+          'git -c credential.helper=\'!f() { echo "password=' +
+          token +
+          '"; echo "username=' +
+          username +
+          '"; }; f\' fetch origin';
       } else {
         //https://stackoverflow.com/questions/11506124/how-to-enter-command-with-password-for-git-pull
         //git -c credential.helper='!f() { echo "password=mysecretpassword"; }; f' fetch origin
         commandToSetCredentials =
-            'git -c credential.helper=\'!f() { echo "password=' +
-            token +
-            '"; }; f\' fetch origin';
+          'git -c credential.helper=\'!f() { echo "password=' +
+          token +
+          '"; }; f\' fetch origin';
       }
       commandToPull = commandToSetCredentials + ' && ' + commandToPull;
     }
 
-    let command = GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) + commandToPull;
+    let command =
+      GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) +
+      commandToPull;
     try {
       let result = await ExecHelper.exec(command);
       console.log('-- pullRepo finished');
@@ -234,7 +253,9 @@ export default class GitHubHelper implements RepositoryManagementInterface{
 
   public static async getRepoURL(path_to_github_project: any): Promise<any> {
     let commandToGetInformation = 'git config --get remote.origin.url';
-    let command = GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) + commandToGetInformation;
+    let command =
+      GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) +
+      commandToGetInformation;
     try {
       let result = await ExecHelper.exec(command);
       return result;
