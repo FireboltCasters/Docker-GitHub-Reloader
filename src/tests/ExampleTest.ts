@@ -1,5 +1,7 @@
-import Example from './Example';
+import Example from '../Example';
 
 test('Example Test', async () => {
-  expect(Example.multiply(3, 4)).toBe(12);
+  let result = Example.multiply(3, 4);
+  console.log(result)
+  expect(result).toBe(12);
 });
