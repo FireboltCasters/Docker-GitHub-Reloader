@@ -1,6 +1,6 @@
 {
   "name": "docker-github-reloader",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A package for restarting a docker container on updates of a git repo",
   "main": "index.js",
   "types": "index.d.ts",
