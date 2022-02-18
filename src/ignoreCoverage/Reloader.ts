@@ -1,12 +1,12 @@
 import schedule from 'node-schedule';
-import GitHubHelper from './GitHubHelper';
+import RepositoryManagementHelper from './RepositoryManagementHelper';
 import DockerHelper from './DockerHelper';
 import EnvHelper from './EnvHelper';
 
 export default class Reloader {
   private static checkRunning = false;
   private static updateRunning = false;
-  private static gitHubHelper: GitHubHelper;
+  private static repositoryHelper: RepositoryManagementHelper;
   private static dockerHelper: DockerHelper;
   private static updateJob: any;
 
@@ -14,17 +14,22 @@ export default class Reloader {
     try {
       console.log('Welcome');
       let envHelper = new EnvHelper(env);
-      Reloader.gitHubHelper = new GitHubHelper(envHelper);
-      await Reloader.gitHubHelper.prepare();
+      Reloader.repositoryHelper = new RepositoryManagementHelper(envHelper);
+      await Reloader.repositoryHelper.prepare();
       console.log(
         'Watching now: ' +
-          Reloader.gitHubHelper.github_owner +
-          '/' +
-          Reloader.gitHubHelper.github_repo +
+          await Reloader.repositoryHelper.getWatchingRepositoryName() +
           ' for updates'
       );
 
       Reloader.dockerHelper = new DockerHelper(envHelper);
+
+      /**
+      let isDockerActive = await Reloader.dockerHelper.isDockerComposeRunning();
+      if(!isDockerActive){
+        console.log("[Reloader] Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?")
+      }
+      */
 
       console.log('Start Reloader');
       let schedule_time = envHelper.getScheduleTimeForChecks();
@@ -54,10 +59,10 @@ export default class Reloader {
   }
 
   private static async tryCheckForUpdates() {
-    console.log('tryCheckForUpdates');
+    console.log('tryCheckForUpdates at '+ new Date());
     if (Reloader.isCheckAllowed()) {
       Reloader.checkRunning = true;
-      let updateObject = await Reloader.gitHubHelper.getNextUpdateObject();
+      let updateObject = await Reloader.repositoryHelper.getNextUpdateObject();
       if (!!updateObject && !!updateObject.sha) {
         await Reloader.planOrRunUpdate(updateObject);
       }
@@ -124,8 +129,7 @@ export default class Reloader {
   private static async handleUpdate(commit_id: any) {
     console.log('Handle Update');
     await Reloader.dockerHelper.stop();
-    await Reloader.gitHubHelper.pullRepo(commit_id);
-    Reloader.gitHubHelper.setCurrentCommitId(commit_id);
+    await Reloader.repositoryHelper.downloadNewUpdate(commit_id);
     await Reloader.dockerHelper.prepare();
     await Reloader.dockerHelper.start();
   }

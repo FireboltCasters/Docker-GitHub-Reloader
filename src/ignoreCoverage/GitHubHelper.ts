@@ -1,20 +1,25 @@
 import EnvHelper from './EnvHelper';
 import {Octokit} from '@octokit/rest';
 // @ts-ignore
-import myPackage from './../package.json';
+import myPackage from '../../package.json';
 import ExecHelper from './ExecHelper';
+import RepositoryManagementInterface from "./RepositoryManagementInterface";
+import ScheduleCommentHelper from "./ScheduleCommentHelper";
 
-export default class GitHubHelper {
+export default class GitHubHelper implements RepositoryManagementInterface{
+  static ENV_NAME = "GitHub";
+
   static MOCK = false;
 
   github_owner: any;
   github_repo: any;
-  private github_token: any;
+  private git_token: any;
+  private git_username: any;
   private github_branch: any;
   private path_to_github_project: any;
 
   private octokit: Octokit;
-  private current_commit_id = {sha: undefined};
+  private current_commit_id = undefined;
 
   constructor(env: EnvHelper) {
     this.path_to_github_project = env.getFolderPathToGitHubProject();
@@ -22,7 +27,8 @@ export default class GitHubHelper {
     this.github_owner = env.getGitHubOwnerName();
     this.github_repo = env.getGitHubRepoName();
 
-    this.github_token = env.getGitHubAuthToken();
+    this.git_token = env.getGitHubAuthToken();
+    this.git_username = env.getGitAuthUsername();
     this.github_branch = env.getGitHubBranchName();
 
     let userAgent = myPackage.name + ' v' + myPackage.version;
@@ -35,7 +41,7 @@ export default class GitHubHelper {
 
   async prepare() {
     if (!this.github_owner || !this.github_repo) {
-      let informations = await this.getRepoInformations();
+      let informations = await GitHubHelper.getRepoInformations(this.path_to_github_project);
       if (!this.github_owner) {
         this.github_owner = informations.owner;
       }
@@ -43,6 +49,11 @@ export default class GitHubHelper {
         this.github_repo = informations.repo;
       }
     }
+    return (!!this.github_owner && !!this.github_repo);
+  }
+
+  async getWatchingRepositoryName(): Promise<string>{
+    return this.github_owner+"/"+this.github_repo;
   }
 
   async getNextUpdateObject(): Promise<{sha: any; schedule_update_time: any}> {
@@ -60,13 +71,21 @@ export default class GitHubHelper {
     return answer;
   }
 
-  setCurrentCommitId(latest_commit: any) {
-    this.current_commit_id = latest_commit.sha;
+  async downloadNewUpdate(commit_id: string): Promise<boolean>{
+    return await this.pullRepo(commit_id);
+  }
+
+  private setCurrentCommitId(commit_id: any) {
+    this.current_commit_id = commit_id;
   }
 
   private isDifferentCommit(latest_commit: any) {
+    return GitHubHelper.isDifferentCommit(latest_commit, this.current_commit_id);
+  }
+
+  public static isDifferentCommit(latest_commit: any, current_commit_id: any) {
     if (!!latest_commit && !!latest_commit.sha) {
-      let changedCommitId = latest_commit.sha !== this.current_commit_id;
+      let changedCommitId = latest_commit.sha !== current_commit_id;
       if (changedCommitId) {
         return true;
       }
@@ -79,26 +98,9 @@ export default class GitHubHelper {
     let author = commit.author;
     let author_name = author.login;
     let message = commit.message;
+    //TODO maybe add support to filter for author
 
-    /** return SCHEDULE TIME AS STRING
-     *    *    *    *    *    *
-     ┬    ┬    ┬    ┬    ┬    ┬
-     │    │    │    │    │    │
-     │    │    │    │    │    └ day of week (0 - 7) (0 or 7 is Sun)
-     │    │    │    │    └───── month (1 - 12)
-     │    │    │    └────────── day of month (1 - 31)
-     │    │    └─────────────── hour (0 - 23)
-     │    └──────────────────── minute (0 - 59)
-     └───────────────────────── second (0 - 59, OPTIONAL)
-     */
-
-    if (!!message) {
-      //TODO
-      // message="sefioshe [IN 5 MIN]"
-      // message="sefioshe [AT 00:00]" --> return "0 0 0 "
-    }
-
-    return undefined;
+    return ScheduleCommentHelper.getScheduleUpdateTimeFromMessage(message);
   }
 
   private async getLatestCommit(): Promise<{sha: any}> {
@@ -127,7 +129,7 @@ export default class GitHubHelper {
       if (err.status === 404) {
         console.log(
           'Project not found. For Private Repos set ' +
-            EnvHelper.GITHUB_AUTH_PERSONAL_ACCESS_TOKEN_FIELD
+            EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD
         );
       } else {
         console.log(err);
@@ -150,30 +152,50 @@ export default class GitHubHelper {
   }
 
   async pullRepo(commit_id: any) {
+    let success = await GitHubHelper.pullRepoRaw(commit_id, this.path_to_github_project, this.git_token, this.git_username);
+    if(success){
+      this.setCurrentCommitId(commit_id)
+    }
+    return success;
+  }
+
+  public static async pullRepoRaw(commit_id: any, path_to_github_project: string, token: any, username: any) {
     console.log('-- pullRepo start');
 
     let commandToPull = 'git pull';
 
-    let token = this.github_token;
     if (!!token) {
-      //https://stackoverflow.com/questions/11506124/how-to-enter-command-with-password-for-git-pull
-      //git -c credential.helper='!f() { echo "password=mysecretpassword"; }; f' fetch origin
-      let commandToSetCredentials =
-        'git -c credential.helper=\'!f() { echo "password=' +
-        token +
-        '"; }; f\' fetch origin';
+      let commandToSetCredentials = "";
+      //TODO this can be done nicer
+      if(!!username){
+        commandToSetCredentials =
+            'git -c credential.helper=\'!f() { echo "password=' +
+            token +
+            '"; echo "username='+ username +'"; }; f\' fetch origin';
+      } else {
+        //https://stackoverflow.com/questions/11506124/how-to-enter-command-with-password-for-git-pull
+        //git -c credential.helper='!f() { echo "password=mysecretpassword"; }; f' fetch origin
+        commandToSetCredentials =
+            'git -c credential.helper=\'!f() { echo "password=' +
+            token +
+            '"; }; f\' fetch origin';
+      }
       commandToPull = commandToSetCredentials + ' && ' + commandToPull;
     }
 
-    let command = this.getCommandToGitHubProject() + commandToPull;
+    let command = GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) + commandToPull;
     try {
       let result = await ExecHelper.exec(command);
       console.log('-- pullRepo finished');
       return true;
     } catch (err) {
       if (!!err && !!err.stderr) {
-        console.log('err.stderr');
-        console.log(err.stderr);
+        //TODO test what happens for uncommited changes
+        /**
+         err.stderr
+         From https://xxxxxx/owner/repo
+         09feaa8..5344af0  main       -> origin/main
+         */
         console.log('-- pullRepo finished');
         return true;
       } else {
@@ -185,17 +207,17 @@ export default class GitHubHelper {
     return false;
   }
 
-  private getCommandToGitHubProject() {
-    return 'cd ' + this.path_to_github_project + ' && ';
+  public static getCommandToGitProjectRaw(path_to_git_project: string): string {
+    return 'cd ' + path_to_git_project + ' && ';
   }
 
-  private async getRepoInformations() {
+  public static async getRepoInformations(path_to_github_project: any) {
     let answer = {
       owner: undefined,
       repo: undefined,
     };
 
-    let url = await this.getRepoURL();
+    let url = await GitHubHelper.getRepoURL(path_to_github_project);
     if (!!url) {
       //url = https://github.com/FireboltCasters/RocketMealsApp.git
       url = url.replace('.git', '');
@@ -210,9 +232,9 @@ export default class GitHubHelper {
     return answer;
   }
 
-  private async getRepoURL(): Promise<any> {
+  public static async getRepoURL(path_to_github_project: any): Promise<any> {
     let commandToGetInformation = 'git config --get remote.origin.url';
-    let command = this.getCommandToGitHubProject() + commandToGetInformation;
+    let command = GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) + commandToGetInformation;
     try {
       let result = await ExecHelper.exec(command);
       return result;

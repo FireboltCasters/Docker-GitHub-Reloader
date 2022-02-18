@@ -1,3 +1,6 @@
+import GitHubHelper from "./GitHubHelper";
+import GitLabHelper from "./GitLabHelper";
+
 export default class EnvHelper {
   static readonly SCHEDULE_TIME_FIELD = 'SCHEDULE_TIME';
   static readonly GITHUB_OWNER_FIELD = 'GITHUB_OWNER';
@@ -6,7 +9,10 @@ export default class EnvHelper {
 
   static readonly SCHEDULE_TIME_CHECK_FIELD = "SCHEDULE_TIME_CHECK";
   static readonly SCHEDULE_TIME_UPDATE_FIELD = "SCHEDULE_TIME_STATIC_UPDATE"; //TODO implement logic
-  static readonly GITHUB_AUTH_PERSONAL_ACCESS_TOKEN_FIELD = "GITHUB_AUTH_PERSONAL_ACCESS_TOKEN";
+  static readonly REPOSITORY_MANAGEMENT_FIELD = "REPOSITORY_MANAGEMENT";
+  static readonly REPOSITORY_MANAGEMENT_BASE_URL_FIELD = "REPOSITORY_MANAGEMENT_BASE_URL";
+  static readonly GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD = "GIT_AUTH_PERSONAL_ACCESS_TOKEN";
+  static readonly GIT_AUTH_USERNAME_FIELD = "GITLAB_AUTH_USERNAME";
   static readonly GITHUB_PROJECT_OWNER_FIELD = "GITHUB_PROJECT_OWNER";
   static readonly GITHUB_PROJECT_REPO_FIELD = "GITHUB_PROJECT_REPO";
   static readonly FOLDER_PATH_TO_PROJECT_FIELD = "FOLDER_PATH_TO_PROJECT";
@@ -26,7 +32,10 @@ export default class EnvHelper {
   private readonly env = {
     [EnvHelper.SCHEDULE_TIME_CHECK_FIELD]: null,
     [EnvHelper.SCHEDULE_TIME_UPDATE_FIELD]: null,
-    [EnvHelper.GITHUB_AUTH_PERSONAL_ACCESS_TOKEN_FIELD]: null,
+    [EnvHelper.REPOSITORY_MANAGEMENT_FIELD]: null,
+    [EnvHelper.REPOSITORY_MANAGEMENT_BASE_URL_FIELD]: null,
+    [EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD]: null,
+    [EnvHelper.GIT_AUTH_USERNAME_FIELD]: null,
     [EnvHelper.GITHUB_PROJECT_OWNER_FIELD]: null,
     [EnvHelper.GITHUB_PROJECT_REPO_FIELD]: null,
     [EnvHelper.GITHUB_BRANCH_FIELD]: null,
@@ -54,16 +63,30 @@ export default class EnvHelper {
   }
 
   getFolderPathToProject(){
-    return this.env[EnvHelper.FOLDER_PATH_TO_PROJECT_FIELD] || "/Users/nbaumgartner/Documents/GitHub/RocketMealsBackend";
+    return this.env[EnvHelper.FOLDER_PATH_TO_PROJECT_FIELD] || undefined;
+  }
+
+  getRepositoryManagementName(): any{
+    return this.env[EnvHelper.REPOSITORY_MANAGEMENT_FIELD] || GitHubHelper.ENV_NAME;
+  }
+
+  getRepositoryManagementBaseURL(): any{
+    return this.env[EnvHelper.REPOSITORY_MANAGEMENT_BASE_URL_FIELD] || undefined
   }
 
   /**
-   * GitHub Auth
+   * Git Auth
    */
 
   getGitHubAuthToken() {
     return (
-      this.env[EnvHelper.GITHUB_AUTH_PERSONAL_ACCESS_TOKEN_FIELD] || undefined
+      this.env[EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD] || undefined
+    );
+  }
+
+  getGitAuthUsername(){
+    return (
+        this.env[EnvHelper.GIT_AUTH_USERNAME_FIELD] || undefined
     );
   }
 
@@ -80,7 +103,7 @@ export default class EnvHelper {
   }
 
   getGitHubBranchName() {
-    return this.env[EnvHelper.GITHUB_BRANCH_FIELD] || undefined;
+    return this.env[EnvHelper.GITHUB_BRANCH_FIELD] || undefined || "main";
   }
 
   getFolderPathToGitHubProject() {

@@ -1,6 +1,7 @@
 import ExecHelper from './ExecHelper';
 import EnvHelper from './EnvHelper';
 
+//TODO refactor to DeployManagementHelper and DeployeManagementInterface like done for GitHub and GitLab
 export default class DockerHelper {
   private readonly pathToDockerProject: any;
   private readonly runPrepare: boolean;
@@ -12,6 +13,28 @@ export default class DockerHelper {
 
   async stop(): Promise<boolean> {
     return await this.stopDockerCompose();
+  }
+
+  async isDockerComposeRunning(): Promise<boolean>{
+    console.log('-- isDockerComposeRunning start');
+    let commandToStopDocker = 'docker ps';
+    try {
+      let result = await ExecHelper.exec(commandToStopDocker);
+      console.log(result);
+      console.log('-- isDockerComposeRunning finished');
+      return true;
+    } catch (err) {
+      if (!!err && !!err.error) {
+        let errorMessage = err.error.toString();
+        if(errorMessage.includes("Cannot connect to the Docker daemon")){
+          return false;
+        }
+      }
+      console.log('Okay no idea whats going on');
+      console.log(err);
+    }
+    console.log('-- isDockerComposeRunning failed');
+    return false;
   }
 
   private async stopDockerCompose(): Promise<boolean> {
