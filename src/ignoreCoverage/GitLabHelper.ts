@@ -182,7 +182,7 @@ export default class GitLabHelper implements RepositoryManagementInterface {
       this.path_to_github_project,
       this.git_token,
       this.git_username,
-      "username"
+      'username'
     );
     if (success) {
       this.setCurrentCommitId(commit_id);
