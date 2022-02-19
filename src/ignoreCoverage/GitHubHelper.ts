@@ -182,6 +182,10 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       usernameCredentialField = 'email';
     }
 
+    console.log("path_to_github_project: ", path_to_github_project);
+    console.log("token: ", token)
+    console.log("username: ", username)
+
     let commandToPull = 'git pull';
 
     if (!!token) {
@@ -189,13 +193,8 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       //TODO this can be done nicer
       if (!!username) {
         commandToSetCredentials =
-          'git -c credential.helper=\'!f() { echo "password=' +
-          token +
-          '"; echo "' +
-          usernameCredentialField +
-          '=' +
-          username +
-          '"; }; f\' fetch origin';
+            'git -c credential.helper=\'!f() { echo "password=' +
+            token + '\n'+usernameCredentialField+'=' + username + '"; }; f\' fetch origin';
       } else {
         //https://stackoverflow.com/questions/11506124/how-to-enter-command-with-password-for-git-pull
         //git -c credential.helper='!f() { echo "password=mysecretpassword"; }; f' fetch origin
