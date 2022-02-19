@@ -161,7 +161,8 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       commit_id,
       this.path_to_github_project,
       this.git_token,
-      this.git_username
+      this.git_username,
+      "email"
     );
     if (success) {
       this.setCurrentCommitId(commit_id);
@@ -173,9 +174,13 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     commit_id: any,
     path_to_github_project: string,
     token: any,
-    username: any
+    username: any,
+    usernameCredentialField: any
   ) {
     console.log('-- pullRepo start');
+    if(!usernameCredentialField){
+      usernameCredentialField = "email";
+    }
 
     let commandToPull = 'git pull';
 
@@ -186,7 +191,7 @@ export default class GitHubHelper implements RepositoryManagementInterface {
         commandToSetCredentials =
           'git -c credential.helper=\'!f() { echo "password=' +
           token +
-          '"; echo "username=' +
+          '"; echo "'+usernameCredentialField+'=' +
           username +
           '"; }; f\' fetch origin';
       } else {
