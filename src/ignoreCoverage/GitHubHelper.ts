@@ -4,7 +4,7 @@ import {Octokit} from '@octokit/rest';
 import ExecHelper from './ExecHelper';
 import RepositoryManagementInterface from './RepositoryManagementInterface';
 import ScheduleCommentHelper from './ScheduleCommentHelper';
-import Reloader from "./Reloader";
+import Reloader from './Reloader';
 
 export default class GitHubHelper implements RepositoryManagementInterface {
   static ENV_NAME = 'GitHub';
