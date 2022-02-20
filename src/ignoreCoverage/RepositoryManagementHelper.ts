@@ -2,25 +2,27 @@ import EnvHelper from './EnvHelper';
 import RepositoryManagementInterface from './RepositoryManagementInterface';
 import GitHubHelper from './GitHubHelper';
 import GitLabHelper from './GitLabHelper';
+import LogHelper from "./LogHelper";
 
 export default class RepositoryManagementHelper
   implements RepositoryManagementInterface
 {
   private implementation: RepositoryManagementInterface;
 
-  constructor(env: EnvHelper) {
-    this.implementation = this.getRepositoryImplementation(env);
+  constructor(env: EnvHelper, logger: LogHelper) {
+    this.implementation = this.getRepositoryImplementation(env, logger);
   }
 
   private getRepositoryImplementation(
-    env: EnvHelper
+    env: EnvHelper,
+    logger: LogHelper
   ): RepositoryManagementInterface {
     let repositoryManagementName = env.getRepositoryManagementName();
     switch (repositoryManagementName) {
       case GitLabHelper.ENV_NAME:
-        return new GitLabHelper(env);
+        return new GitLabHelper(env, logger);
       default:
-        return new GitHubHelper(env);
+        return new GitHubHelper(env, logger);
     }
   }
 

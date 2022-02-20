@@ -1,12 +1,15 @@
 import ExecHelper from './ExecHelper';
 import EnvHelper from './EnvHelper';
+import LogHelper from "./LogHelper";
 
 //TODO refactor to DeployManagementHelper and DeployeManagementInterface like done for GitHub and GitLab
 export default class DockerHelper {
   private readonly pathToDockerProject: any;
   private readonly runPrepare: boolean;
+  private readonly logger: LogHelper;
 
-  constructor(env: EnvHelper) {
+  constructor(env: EnvHelper, logger: LogHelper) {
+    this.logger = logger;
     this.pathToDockerProject = env.getFolderPathToDockerProject();
     this.runPrepare = env.getPrepareDockerProject();
   }
@@ -16,12 +19,12 @@ export default class DockerHelper {
   }
 
   async isDockerComposeRunning(): Promise<boolean> {
-    console.log('-- isDockerComposeRunning start');
+    this.logger.info('-- isDockerComposeRunning start')
     let commandToStopDocker = 'docker ps';
     try {
       let result = await ExecHelper.exec(commandToStopDocker);
-      console.log(result);
-      console.log('-- isDockerComposeRunning finished');
+      this.logger.debug(result);
+      this.logger.info('-- isDockerComposeRunning finished');
       return true;
     } catch (err) {
       if (!!err && !!err.error) {
@@ -30,21 +33,21 @@ export default class DockerHelper {
           return false;
         }
       }
-      console.log('Okay no idea whats going on');
-      console.log(err);
+      this.logger.error('Okay no idea whats going on');
+      this.logger.error(err);
     }
-    console.log('-- isDockerComposeRunning failed');
+    this.logger.error('-- isDockerComposeRunning failed');
     return false;
   }
 
   private async stopDockerCompose(): Promise<boolean> {
-    console.log('-- stopContainer start');
+    this.logger.info('-- stopContainer start');
     let commandToStopDocker = 'docker-compose down';
     try {
       let result = await ExecHelper.exec(
         this.getCommandToDockerProject() + commandToStopDocker
       );
-      console.log('-- stopContainer finished');
+      this.logger.info('-- stopContainer finished');
       return true;
     } catch (err) {
       if (!!err && !!err.stderr) {
@@ -56,11 +59,11 @@ export default class DockerHelper {
          */
         return err.stderr.includes('done');
       } else {
-        console.log('Okay no idea whats going on');
-        console.log(err);
+        this.logger.error('Okay no idea whats going on');
+        this.logger.error(err);
       }
     }
-    console.log('-- stopContainer failed');
+    this.logger.error('-- stopContainer failed');
     return false;
   }
 
@@ -79,13 +82,13 @@ export default class DockerHelper {
   }
 
   private async startDockerCompose() {
-    console.log('-- startContainer start');
+    this.logger.info('-- startContainer start');
     let commandToStopDocker = 'docker-compose up --build -d';
     try {
       let result = await ExecHelper.exec(
         this.getCommandToDockerProject() + commandToStopDocker
       );
-      console.log('-- startContainer finished');
+      this.logger.info('-- startContainer finished');
       return true;
     } catch (err) {
       if (!!err && !!err.stderr) {
@@ -94,37 +97,36 @@ export default class DockerHelper {
          Starting ... done
          ... is up-to-date
          */
-        console.log(err.stderr);
-        console.log('-- startContainer finished');
+        this.logger.info('-- startContainer finished');
         return err.stderr.includes('done');
       } else {
-        console.log('Okay no idea whats going on');
-        console.log(err);
+        this.logger.error('Okay no idea whats going on');
+        this.logger.error(err);
       }
     }
-    console.log('-- startContainer failed');
+    this.logger.error('-- startContainer failed');
     return false;
   }
 
   private async removeContainer() {
-    console.log('-- removeContainer start');
+    this.logger.info('-- removeContainer start');
     let commandToRemoveContainer = 'docker-compose rm -f';
     try {
       let result = await ExecHelper.exec(
         this.getCommandToDockerProject() + commandToRemoveContainer
       );
-      console.log('-- removeContainer finished');
+      this.logger.info('-- removeContainer finished');
       return true;
     } catch (err) {
       if (!!err && !!err.stderr) {
-        console.log('-- removeContainer finished');
+        this.logger.info('-- removeContainer finished');
         return true;
       } else {
-        console.log('Okay no idea whats going on');
-        console.log(err);
+        this.logger.error('Okay no idea whats going on');
+        this.logger.error(err);
       }
     }
-    console.log('-- removeContainer failed');
+    this.logger.error('-- removeContainer failed');
     return false;
   }
 
@@ -132,53 +134,53 @@ export default class DockerHelper {
     //TODO
     //https://stackoverflow.com/questions/10232192/exec-display-stdout-live
 
-    console.log('-- rebuildImage start');
+    this.logger.info('-- rebuildImage start');
     let commandToRemoveContainer = 'docker-compose build --no-cache --force-rm';
     try {
       let result = await ExecHelper.exec(
         this.getCommandToDockerProject() + commandToRemoveContainer
       );
-      console.log('-- rebuildImage finished');
+      this.logger.info('-- rebuildImage finished');
       return true;
     } catch (err) {
       if (!!err && !!err.stderr) {
-        console.log(err.stderr);
+        this.logger.info(err.stderr);
         // no such file or directory
         // Building 152.7s (8/8) FINISHED
-        console.log('-- rebuildImage finished');
+        this.logger.info('-- rebuildImage finished');
         return true;
       } else {
-        console.log('Okay no idea whats going on');
-        console.log(err);
+        this.logger.error('Okay no idea whats going on');
+        this.logger.error(err);
       }
     }
-    console.log('-- rebuildImage failed');
+    this.logger.error('-- rebuildImage failed');
     return false;
     //docker build . --no-cache
     //docker-compose pull
   }
 
   private async dockerPull() {
-    console.log('-- dockerPull start');
+    this.logger.info('-- dockerPull start');
     let commandToRemoveContainer = 'docker-compose pull';
     try {
       let result = await ExecHelper.exec(
         this.getCommandToDockerProject() + commandToRemoveContainer
       );
-      console.log('-- dockerPull finished');
+      this.logger.info('-- dockerPull finished');
       return true;
     } catch (err) {
       if (!!err && !!err.stderr) {
         // no such file or directory
         // Building 152.7s (8/8) FINISHED
-        console.log('-- dockerPull finished');
+        this.logger.info('-- dockerPull finished');
         return true;
       } else {
-        console.log('Okay no idea whats going on');
-        console.log(err);
+        this.logger.error('Okay no idea whats going on');
+        this.logger.error(err);
       }
     }
-    console.log('-- dockerPull failed');
+    this.logger.error('-- dockerPull failed');
     return false;
     //docker build . --no-cache
     //docker-compose pull

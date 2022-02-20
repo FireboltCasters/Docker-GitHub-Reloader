@@ -2,6 +2,7 @@ import GitHubHelper from './GitHubHelper';
 import GitLabHelper from './GitLabHelper';
 
 export default class EnvHelper {
+  static readonly LOG_LEVEL = 'LOG_LEVEL';
   static readonly SCHEDULE_TIME_CHECK_FIELD = 'SCHEDULE_TIME_CHECK';
   static readonly SCHEDULE_TIME_UPDATE_FIELD = 'SCHEDULE_TIME_STATIC_UPDATE'; //TODO implement logic
   static readonly REPOSITORY_MANAGEMENT_FIELD = 'REPOSITORY_MANAGEMENT';
@@ -31,6 +32,7 @@ export default class EnvHelper {
     'CUSTOM_COMMAND_DOCKER_START'; //TODO implement logic
 
   private readonly env = {
+    [EnvHelper.LOG_LEVEL]: null,
     [EnvHelper.SCHEDULE_TIME_CHECK_FIELD]: null,
     [EnvHelper.SCHEDULE_TIME_UPDATE_FIELD]: null,
     [EnvHelper.REPOSITORY_MANAGEMENT_FIELD]: null,
@@ -54,6 +56,10 @@ export default class EnvHelper {
 
   constructor(env: any) {
     this.env = env || {};
+  }
+
+  getLogLevel(){
+    return this.env[EnvHelper.LOG_LEVEL] || undefined;
   }
 
   /**

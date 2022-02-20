@@ -2,6 +2,7 @@ import schedule from 'node-schedule';
 import RepositoryManagementHelper from './RepositoryManagementHelper';
 import DockerHelper from './DockerHelper';
 import EnvHelper from './EnvHelper';
+import LogHelper from "./LogHelper";
 
 export default class Reloader {
   public static agent = 'docker-github-reloader v0.0.4';
@@ -10,29 +11,32 @@ export default class Reloader {
   private static repositoryHelper: RepositoryManagementHelper;
   private static dockerHelper: DockerHelper;
   private static updateJob: any;
+  private static logger: LogHelper;
 
   static async start(env: any) {
     try {
-      console.log('Welcome');
+      Reloader.logger.info('Welcome');
       let envHelper = new EnvHelper(env);
-      Reloader.repositoryHelper = new RepositoryManagementHelper(envHelper);
+      let logger = new LogHelper(envHelper);
+      Reloader.logger = logger;
+      Reloader.repositoryHelper = new RepositoryManagementHelper(envHelper, logger);
       await Reloader.repositoryHelper.prepare();
-      console.log(
+      Reloader.logger.info(
         'Watching now: ' +
           (await Reloader.repositoryHelper.getWatchingRepositoryName()) +
           ' for updates'
       );
 
-      Reloader.dockerHelper = new DockerHelper(envHelper);
+      Reloader.dockerHelper = new DockerHelper(envHelper, logger);
 
       /**
       let isDockerActive = await Reloader.dockerHelper.isDockerComposeRunning();
       if(!isDockerActive){
-        console.log("[Reloader] Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?")
+        Reloader.logger.info("[Reloader] Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?")
       }
       */
 
-      console.log('Start Reloader');
+      Reloader.logger.info('Start Reloader');
       let schedule_time = envHelper.getScheduleTimeForChecks();
       if (Reloader.isValidScheduleTime(schedule_time)) {
         Reloader.tryCheckForUpdates();
@@ -43,15 +47,15 @@ export default class Reloader {
           await Reloader.sleep(5000);
         }
       } else {
-        console.log(
+        Reloader.logger.error(
           '[ERROR] No Valid ' +
             EnvHelper.SCHEDULE_TIME_CHECK_FIELD +
             ' was given'
         );
       }
     } catch (err) {
-      console.log('Infinite Loop breaked!');
-      console.log(err);
+      Reloader.logger.error('Infinite Loop breaked!');
+      Reloader.logger.error(err);
     }
   }
 
@@ -60,7 +64,7 @@ export default class Reloader {
   }
 
   private static async tryCheckForUpdates() {
-    console.log('tryCheckForUpdates at ' + new Date());
+    Reloader.logger.info('tryCheckForUpdates at ' + new Date());
     if (Reloader.isCheckAllowed()) {
       Reloader.checkRunning = true;
       let updateObject = await Reloader.repositoryHelper.getNextUpdateObject();
@@ -73,11 +77,11 @@ export default class Reloader {
 
   private static isCheckAllowed() {
     if (Reloader.updateRunning) {
-      //console.log("- Skipped check, because an update is running");
+      //Reloader.logger.info("- Skipped check, because an update is running");
       return false;
     }
     if (Reloader.checkRunning) {
-      //console.log("- Skipped check, because a check is already running");
+      //Reloader.logger.info("- Skipped check, because a check is already running");
       return false;
     }
     return true;
@@ -87,7 +91,7 @@ export default class Reloader {
     let commit_id = updateObject.sha;
     let schedule_update_time = updateObject.schedule_update_time;
     if (Reloader.isValidScheduleTime(schedule_update_time)) {
-      console.log('Update planed for: ' + schedule_update_time);
+      Reloader.logger.info('Update planed for: ' + schedule_update_time);
       Reloader.updateJob = schedule.scheduleJob(
         schedule_update_time,
         async function () {
@@ -98,10 +102,10 @@ export default class Reloader {
     } else {
       let startUpdate = true;
       if (!!Reloader.updateJob) {
-        console.log('A planed job will be canceled');
+        Reloader.logger.info('A planed job will be canceled');
         let jobCancelSuccess = Reloader.updateJob.cancel(); //check if cancel was successfull;
         if (!startUpdate) {
-          console.log('Update Job could not be canceled');
+          Reloader.logger.error('Update Job could not be canceled');
         }
         startUpdate = jobCancelSuccess;
       }
@@ -113,7 +117,7 @@ export default class Reloader {
 
   private static isUpdateAllowed() {
     if (Reloader.updateRunning) {
-      console.log('Skipped update! An update is already running');
+      Reloader.logger.info('Skipped update! An update is already running');
       return false;
     }
     return true;
@@ -128,7 +132,7 @@ export default class Reloader {
   }
 
   private static async handleUpdate(commit_id: any) {
-    console.log('Handle Update');
+    Reloader.logger.info('Handle Update');
     await Reloader.dockerHelper.stop();
     await Reloader.repositoryHelper.downloadNewUpdate(commit_id);
     await Reloader.dockerHelper.prepare();

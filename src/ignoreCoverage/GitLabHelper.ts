@@ -6,6 +6,7 @@ import RepositoryManagementInterface from './RepositoryManagementInterface';
 import GitHubHelper from './GitHubHelper';
 import axios from 'axios';
 import ScheduleCommentHelper from './ScheduleCommentHelper';
+import LogHelper from "./LogHelper";
 
 export default class GitLabHelper implements RepositoryManagementInterface {
   static ENV_NAME = 'GitLab';
@@ -20,9 +21,11 @@ export default class GitLabHelper implements RepositoryManagementInterface {
   private base_url: any;
 
   private current_commit_id = undefined;
+  private logger: LogHelper;
 
-  constructor(env: EnvHelper) {
-    console.log('USING GITLAB HELPER');
+  constructor(env: EnvHelper, logger: LogHelper) {
+    this.logger = logger;
+    this.logger.debug('USING GITLAB HELPER');
     this.path_to_github_project = env.getFolderPathToGitHubProject();
 
     this.github_owner = env.getGitHubOwnerName();
@@ -39,7 +42,7 @@ export default class GitLabHelper implements RepositoryManagementInterface {
   async prepare() {
     if (!this.github_owner || !this.github_repo) {
       let informations = await GitHubHelper.getRepoInformations(
-        this.path_to_github_project
+        this.path_to_github_project, this.logger
       );
       if (!this.github_owner) {
         this.github_owner = informations.owner;
@@ -109,10 +112,10 @@ export default class GitLabHelper implements RepositoryManagementInterface {
         commit.sha = commit.id;
         return commit;
       } else {
-        console.log('Incorrect Commit?');
+        this.logger.error('Incorrect Commit?');
       }
     } else {
-      console.log(
+      this.logger.error(
         'No Matching project found. Consider for adding a ' +
           EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD
       );
@@ -151,11 +154,12 @@ export default class GitLabHelper implements RepositoryManagementInterface {
     return await GitLabHelper.fetchGitLabAPI(
       this.base_url,
       'api/v4/' + path,
-      this.git_token
+      this.git_token,
+        this.logger
     );
   }
 
-  static async fetchGitLabAPI(base_url: any, path: any, token: any) {
+  static async fetchGitLabAPI(base_url: any, path: any, token: any, logger: LogHelper) {
     let headers = {};
     if (!!token) {
       // @ts-ignore
@@ -173,7 +177,7 @@ export default class GitLabHelper implements RepositoryManagementInterface {
       }
     } catch (err) {
       if (err.code === 404) {
-        console.log('Not Found');
+        logger.error('Not Found');
       }
       return undefined;
     }
@@ -185,7 +189,8 @@ export default class GitLabHelper implements RepositoryManagementInterface {
       this.path_to_github_project,
       this.git_token,
       this.git_username,
-      this.git_fieldname_credential_user
+      this.git_fieldname_credential_user,
+        this.logger
     );
     if (success) {
       this.setCurrentCommitId(commit_id);
