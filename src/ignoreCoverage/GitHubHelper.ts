@@ -195,17 +195,11 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       let commandToSetCredentials = '';
       //TODO this can be done nicer
       if (!!username) {
-        commandToSetCredentials =
-          "git -c credential.helper='!f() { " +
-          'echo "password=' +
-          token +
-          '"; ' +
-          'echo "' +
-          usernameCredentialField +
-          '=' +
-          username +
-          '";' +
-          " }; f' fetch origin";
+        //
+        commandToSetCredentials = "git config credential.helper '!f() { sleep 1; "+
+            'echo "'+usernameCredentialField+'='+username+'"; '+
+            'echo "password='+token+'"; }; '+
+          "f'";
       } else {
         //https://stackoverflow.com/questions/11506124/how-to-enter-command-with-password-for-git-pull
         //git -c credential.helper='!f() { echo "password=mysecretpassword"; }; f' fetch origin
