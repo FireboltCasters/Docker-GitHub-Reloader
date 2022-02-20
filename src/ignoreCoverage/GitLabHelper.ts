@@ -30,7 +30,8 @@ export default class GitLabHelper implements RepositoryManagementInterface {
 
     this.git_token = env.getGitHubAuthToken();
     this.git_username = env.getGitAuthUsername();
-    this.git_fieldname_credential_user = env.getGitUsernameFieldName() || "username";
+    this.git_fieldname_credential_user =
+      env.getGitUsernameFieldName() || 'username';
     this.github_branch = env.getGitHubBranchName();
     this.base_url = env.getRepositoryManagementBaseURL();
   }

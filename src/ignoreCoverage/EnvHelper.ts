@@ -10,7 +10,8 @@ export default class EnvHelper {
   static readonly GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD =
     'GIT_AUTH_PERSONAL_ACCESS_TOKEN';
   static readonly GIT_AUTH_USERNAME_FIELD = 'GIT_AUTH_USERNAME';
-  static readonly GIT_AUTH_CREDENTIAL_FIELDNAME_USER = 'GIT_AUTH_CREDENTIAL_FIELDNAME_USER';
+  static readonly GIT_AUTH_CREDENTIAL_FIELDNAME_USER =
+    'GIT_AUTH_CREDENTIAL_FIELDNAME_USER';
   static readonly GIT_PROJECT_OWNER_FIELD = 'GIT_PROJECT_OWNER';
   static readonly GIT_PROJECT_REPO_FIELD = 'GIT_PROJECT_REPO';
   static readonly GIT_BRANCH_FIELD = 'GIT_BRANCH';
@@ -93,8 +94,8 @@ export default class EnvHelper {
     return this.env[EnvHelper.GIT_AUTH_USERNAME_FIELD] || undefined;
   }
 
-  getGitUsernameFieldName(){
-    return this.env[EnvHelper.GIT_AUTH_CREDENTIAL_FIELDNAME_USER] || undefined
+  getGitUsernameFieldName() {
+    return this.env[EnvHelper.GIT_AUTH_CREDENTIAL_FIELDNAME_USER] || undefined;
   }
 
   /**
