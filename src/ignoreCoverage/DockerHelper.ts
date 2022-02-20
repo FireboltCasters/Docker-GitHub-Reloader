@@ -1,6 +1,6 @@
 import ExecHelper from './ExecHelper';
 import EnvHelper from './EnvHelper';
-import LogHelper from "./LogHelper";
+import LogHelper from './LogHelper';
 
 //TODO refactor to DeployManagementHelper and DeployeManagementInterface like done for GitHub and GitLab
 export default class DockerHelper {
@@ -19,7 +19,7 @@ export default class DockerHelper {
   }
 
   async isDockerComposeRunning(): Promise<boolean> {
-    this.logger.info('-- isDockerComposeRunning start')
+    this.logger.info('-- isDockerComposeRunning start');
     let commandToStopDocker = 'docker ps';
     try {
       let result = await ExecHelper.exec(commandToStopDocker);

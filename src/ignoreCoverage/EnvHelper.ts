@@ -58,7 +58,7 @@ export default class EnvHelper {
     this.env = env || {};
   }
 
-  getLogLevel(){
+  getLogLevel() {
     return this.env[EnvHelper.LOG_LEVEL] || undefined;
   }
 

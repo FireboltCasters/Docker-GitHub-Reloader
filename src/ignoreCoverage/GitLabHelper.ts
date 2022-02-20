@@ -6,7 +6,7 @@ import RepositoryManagementInterface from './RepositoryManagementInterface';
 import GitHubHelper from './GitHubHelper';
 import axios from 'axios';
 import ScheduleCommentHelper from './ScheduleCommentHelper';
-import LogHelper from "./LogHelper";
+import LogHelper from './LogHelper';
 
 export default class GitLabHelper implements RepositoryManagementInterface {
   static ENV_NAME = 'GitLab';
@@ -42,7 +42,8 @@ export default class GitLabHelper implements RepositoryManagementInterface {
   async prepare() {
     if (!this.github_owner || !this.github_repo) {
       let informations = await GitHubHelper.getRepoInformations(
-        this.path_to_github_project, this.logger
+        this.path_to_github_project,
+        this.logger
       );
       if (!this.github_owner) {
         this.github_owner = informations.owner;
@@ -155,11 +156,16 @@ export default class GitLabHelper implements RepositoryManagementInterface {
       this.base_url,
       'api/v4/' + path,
       this.git_token,
-        this.logger
+      this.logger
     );
   }
 
-  static async fetchGitLabAPI(base_url: any, path: any, token: any, logger: LogHelper) {
+  static async fetchGitLabAPI(
+    base_url: any,
+    path: any,
+    token: any,
+    logger: LogHelper
+  ) {
     let headers = {};
     if (!!token) {
       // @ts-ignore
@@ -190,7 +196,7 @@ export default class GitLabHelper implements RepositoryManagementInterface {
       this.git_token,
       this.git_username,
       this.git_fieldname_credential_user,
-        this.logger
+      this.logger
     );
     if (success) {
       this.setCurrentCommitId(commit_id);

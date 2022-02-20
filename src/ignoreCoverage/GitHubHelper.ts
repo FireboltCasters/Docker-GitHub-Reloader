@@ -5,7 +5,7 @@ import ExecHelper from './ExecHelper';
 import RepositoryManagementInterface from './RepositoryManagementInterface';
 import ScheduleCommentHelper from './ScheduleCommentHelper';
 import Reloader from './Reloader';
-import LogHelper from "./LogHelper";
+import LogHelper from './LogHelper';
 
 export default class GitHubHelper implements RepositoryManagementInterface {
   static ENV_NAME = 'GitHub';
@@ -48,7 +48,8 @@ export default class GitHubHelper implements RepositoryManagementInterface {
   async prepare() {
     if (!this.github_owner || !this.github_repo) {
       let informations = await GitHubHelper.getRepoInformations(
-        this.path_to_github_project, this.logger
+        this.path_to_github_project,
+        this.logger
       );
       if (!this.github_owner) {
         this.github_owner = informations.owner;
@@ -169,7 +170,7 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       this.git_token,
       this.git_username,
       this.git_fieldname_credential_user,
-        this.logger
+      this.logger
     );
     if (success) {
       this.setCurrentCommitId(commit_id);
@@ -250,7 +251,10 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     return 'cd ' + path_to_git_project + ' && ';
   }
 
-  public static async getRepoInformations(path_to_github_project: any, logger: LogHelper) {
+  public static async getRepoInformations(
+    path_to_github_project: any,
+    logger: LogHelper
+  ) {
     let answer = {
       owner: undefined,
       repo: undefined,
@@ -271,7 +275,10 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     return answer;
   }
 
-  public static async getRepoURL(path_to_github_project: any, logger: LogHelper): Promise<any> {
+  public static async getRepoURL(
+    path_to_github_project: any,
+    logger: LogHelper
+  ): Promise<any> {
     let commandToGetInformation = 'git config --get remote.origin.url';
     let command =
       GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) +

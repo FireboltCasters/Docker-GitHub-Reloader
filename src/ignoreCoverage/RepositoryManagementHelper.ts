@@ -2,7 +2,7 @@ import EnvHelper from './EnvHelper';
 import RepositoryManagementInterface from './RepositoryManagementInterface';
 import GitHubHelper from './GitHubHelper';
 import GitLabHelper from './GitLabHelper';
-import LogHelper from "./LogHelper";
+import LogHelper from './LogHelper';
 
 export default class RepositoryManagementHelper
   implements RepositoryManagementInterface

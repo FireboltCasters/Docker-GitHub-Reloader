@@ -2,7 +2,7 @@ import schedule from 'node-schedule';
 import RepositoryManagementHelper from './RepositoryManagementHelper';
 import DockerHelper from './DockerHelper';
 import EnvHelper from './EnvHelper';
-import LogHelper from "./LogHelper";
+import LogHelper from './LogHelper';
 
 export default class Reloader {
   public static agent = 'docker-github-reloader v0.0.4';
@@ -19,7 +19,10 @@ export default class Reloader {
       let envHelper = new EnvHelper(env);
       let logger = new LogHelper(envHelper);
       Reloader.logger = logger;
-      Reloader.repositoryHelper = new RepositoryManagementHelper(envHelper, logger);
+      Reloader.repositoryHelper = new RepositoryManagementHelper(
+        envHelper,
+        logger
+      );
       await Reloader.repositoryHelper.prepare();
       Reloader.logger.info(
         'Watching now: ' +
