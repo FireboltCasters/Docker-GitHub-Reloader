@@ -14,6 +14,7 @@ export default class GitLabHelper implements RepositoryManagementInterface {
   github_repo: any;
   private git_token: any;
   private git_username: any;
+  private git_fieldname_credential_user: any;
   private github_branch: any;
   private path_to_github_project: any;
   private base_url: any;
@@ -29,6 +30,7 @@ export default class GitLabHelper implements RepositoryManagementInterface {
 
     this.git_token = env.getGitHubAuthToken();
     this.git_username = env.getGitAuthUsername();
+    this.git_fieldname_credential_user = env.getGitUsernameFieldName() || "username";
     this.github_branch = env.getGitHubBranchName();
     this.base_url = env.getRepositoryManagementBaseURL();
   }
@@ -182,7 +184,7 @@ export default class GitLabHelper implements RepositoryManagementInterface {
       this.path_to_github_project,
       this.git_token,
       this.git_username,
-      'username'
+      this.git_fieldname_credential_user
     );
     if (success) {
       this.setCurrentCommitId(commit_id);
