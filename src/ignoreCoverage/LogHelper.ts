@@ -24,6 +24,10 @@ export default class LogHelper {
   }
 
   private log(level: any, toPrint: any) {
+    if(typeof toPrint==="object" && toPrint.length===1){
+      toPrint = toPrint[0];
+    }
+
     if (level >= parseInt(this.logLevel)) {
       console.log(toPrint);
     }

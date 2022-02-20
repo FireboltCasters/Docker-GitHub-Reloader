@@ -15,10 +15,10 @@ export default class Reloader {
 
   static async start(env: any) {
     try {
-      Reloader.logger.info('Welcome');
       let envHelper = new EnvHelper(env);
       let logger = new LogHelper(envHelper);
       Reloader.logger = logger;
+      Reloader.logger.info('Welcome');
       Reloader.repositoryHelper = new RepositoryManagementHelper(
         envHelper,
         logger
