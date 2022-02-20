@@ -24,7 +24,7 @@ export default class LogHelper {
   }
 
   private log(level: any, toPrint: any) {
-    if(typeof toPrint==="object" && toPrint.length===1){
+    if (typeof toPrint === 'object' && toPrint.length === 1) {
       toPrint = toPrint[0];
     }
 
