@@ -111,13 +111,13 @@ export default class DockerHelper {
     return false;
   }
 
-  private async deleteImages(){
+  private async deleteImages() {
     //let command = `docker rmi $(docker images | grep "^<none>" | awk '{print $3}')`; // removing all the unused Images.
-    let command = "docker rmi $(docker images -a -q)"; //Delete all images (dangling or not)
+    let command = 'docker rmi $(docker images -a -q)'; //Delete all images (dangling or not)
     this.logger.info('-- deleteImages start');
     try {
       let result = await Reloader.execHelper.exec(
-          this.getCommandToDockerProject() + command
+        this.getCommandToDockerProject() + command
       );
       this.logger.info('-- deleteImages finished');
       return true;
@@ -134,13 +134,13 @@ export default class DockerHelper {
     return false;
   }
 
-  private async removeOrphans(){
+  private async removeOrphans() {
     //You can use the following command to delete orphaned volumes :
-    let command = "docker volume rm $(docker volume ls -qf dangling=true)";
+    let command = 'docker volume rm $(docker volume ls -qf dangling=true)';
     this.logger.info('-- removeOrphans start');
     try {
       let result = await Reloader.execHelper.exec(
-          this.getCommandToDockerProject() + command
+        this.getCommandToDockerProject() + command
       );
       this.logger.info('-- removeOrphans finished');
       return true;
@@ -149,7 +149,7 @@ export default class DockerHelper {
         //no orphans left
         // "docker volume rm" requires at least 1 argument.
         this.logger.info('-- removeOrphans finished');
-        return err.toString().includes("requires at least 1 argument");
+        return err.toString().includes('requires at least 1 argument');
       } else {
         this.logger.error('Okay no idea whats going on');
         this.logger.error(err);

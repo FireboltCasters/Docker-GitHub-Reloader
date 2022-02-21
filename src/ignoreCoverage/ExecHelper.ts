@@ -49,7 +49,6 @@ export default class ExecHelper {
   }
 
   private getProxyPreCommand() {
-
     let httpProxy = this.env.getHttpProxy();
     let httpsProxy = this.env.getHttpsProxy();
     let noProxy = this.env.getNoProxy();

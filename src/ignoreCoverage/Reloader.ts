@@ -84,7 +84,9 @@ export default class Reloader {
       return false;
     }
     if (Reloader.checkRunning) {
-      Reloader.logger.info("- Skipped check, because a check is already running");
+      Reloader.logger.info(
+        '- Skipped check, because a check is already running'
+      );
       return false;
     }
     Reloader.logger.info('Start update at ' + new Date());
