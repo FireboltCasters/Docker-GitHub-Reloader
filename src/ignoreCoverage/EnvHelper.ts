@@ -21,10 +21,10 @@ export default class EnvHelper {
   static readonly FOLDER_PATH_TO_DOCKER_PROJECT =
     'FOLDER_PATH_TO_DOCKER_PROJECT';
 
-  static readonly CUSTOM_COMMAND_PRE_COMMANDS = "CUSTOM_COMMAND_PRE_COMMANDS";
-  static readonly HTTP_PROXY = "HTTP_PROXY";
-  static readonly HTTPS_PROXY= "HTTPS_PROXY";
-  static readonly NO_PROXY= "NO_PROXY";
+  static readonly CUSTOM_COMMAND_PRE_COMMANDS = 'CUSTOM_COMMAND_PRE_COMMANDS';
+  static readonly HTTP_PROXY = 'HTTP_PROXY';
+  static readonly HTTPS_PROXY = 'HTTPS_PROXY';
+  static readonly NO_PROXY = 'NO_PROXY';
 
   static readonly DOCKER_PROJECT_PREPARE = 'DOCKER_PROJECT_PREPARE'; // boolean
 
@@ -43,28 +43,28 @@ export default class EnvHelper {
     this.env = env || {};
   }
 
-  private getEnvValue(key: string): string | undefined{
+  private getEnvValue(key: string): string | undefined {
     return this.env[key];
   }
 
   getLogLevel() {
-    return this.getEnvValue(EnvHelper.LOG_LEVEL) ;
+    return this.getEnvValue(EnvHelper.LOG_LEVEL);
   }
 
-  getCustomCommandPreCommands(){
-    return this.getEnvValue(EnvHelper.CUSTOM_COMMAND_PRE_COMMANDS) ;
+  getCustomCommandPreCommands() {
+    return this.getEnvValue(EnvHelper.CUSTOM_COMMAND_PRE_COMMANDS);
   }
 
-  getHttpProxy(){
-    return this.getEnvValue(EnvHelper.HTTP_PROXY) ;
+  getHttpProxy() {
+    return this.getEnvValue(EnvHelper.HTTP_PROXY);
   }
 
-  getHttpsProxy(){
+  getHttpsProxy() {
     return this.getEnvValue(EnvHelper.HTTPS_PROXY) || this.getHttpProxy();
   }
 
-  getNoProxy(){
-    return this.getEnvValue(EnvHelper.NO_PROXY) ;
+  getNoProxy() {
+    return this.getEnvValue(EnvHelper.NO_PROXY);
   }
 
   /**
@@ -76,7 +76,7 @@ export default class EnvHelper {
   }
 
   getFolderPathToProject() {
-    return this.getEnvValue(EnvHelper.FOLDER_PATH_TO_PROJECT) ;
+    return this.getEnvValue(EnvHelper.FOLDER_PATH_TO_PROJECT);
   }
 
 
@@ -87,9 +87,7 @@ export default class EnvHelper {
   }
 
   getRepositoryManagementBaseURL(): any {
-    return (
-      this.getEnvValue(EnvHelper.REPOSITORY_MANAGEMENT_BASE_URL)
-    );
+    return this.getEnvValue(EnvHelper.REPOSITORY_MANAGEMENT_BASE_URL);
   }
 
   /**
@@ -97,17 +95,15 @@ export default class EnvHelper {
    */
 
   getGitHubAuthToken() {
-    return (
-      this.getEnvValue(EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN)
-    );
+    return this.getEnvValue(EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN);
   }
 
   getGitAuthUsername() {
-    return this.getEnvValue(EnvHelper.GIT_AUTH_USERNAME) ;
+    return this.getEnvValue(EnvHelper.GIT_AUTH_USERNAME);
   }
 
   getGitUsernameFieldName() {
-    return this.getEnvValue(EnvHelper.GIT_AUTH_CREDENTIAL_FIELDNAME_USER) ;
+    return this.getEnvValue(EnvHelper.GIT_AUTH_CREDENTIAL_FIELDNAME_USER);
   }
 
   /**
@@ -145,6 +141,8 @@ export default class EnvHelper {
   }
 
   getPrepareDockerProject(): boolean {
-    return this.getEnvValue(EnvHelper.DOCKER_PROJECT_PREPARE) === 'true' || true; //TODO remove default Value
+    return (
+      this.getEnvValue(EnvHelper.DOCKER_PROJECT_PREPARE) === 'true' || true
+    ); //TODO remove default Value
   }
 }

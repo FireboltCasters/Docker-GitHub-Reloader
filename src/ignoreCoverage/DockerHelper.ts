@@ -1,7 +1,7 @@
 import ExecHelper from './ExecHelper';
 import EnvHelper from './EnvHelper';
 import LogHelper from './LogHelper';
-import {Reloader} from "../index";
+import {Reloader} from '../index';
 
 //TODO refactor to DeployManagementHelper and DeployeManagementInterface like done for GitHub and GitLab
 export default class DockerHelper {
