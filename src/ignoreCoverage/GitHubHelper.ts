@@ -195,15 +195,17 @@ export default class GitHubHelper implements RepositoryManagementInterface {
 
     let commandToPull = 'git pull';
 
-    let ENV_FIELD_TOKEN = "GIT_HELPER_TOKEN";
-    let ENV_FIELD_USERNAME = "GIT_HELPER_USERNAME";
+    let ENV_FIELD_TOKEN = 'GIT_HELPER_TOKEN';
+    let ENV_FIELD_USERNAME = 'GIT_HELPER_USERNAME';
 
     if (!!token) {
-      let commandToSetCredentials = 'export '+ENV_FIELD_TOKEN+'='+token+" && ";
+      let commandToSetCredentials =
+        'export ' + ENV_FIELD_TOKEN + '=' + token + ' && ';
       //TODO this can be done nicer
       if (!!username) {
         //
-        commandToSetCredentials += 'export '+ENV_FIELD_USERNAME+'='+username+" && ";
+        commandToSetCredentials +=
+          'export ' + ENV_FIELD_USERNAME + '=' + username + ' && ';
         commandToSetCredentials +=
           "git config credential.helper '!f() { sleep 1; " +
           'echo "' +
