@@ -202,10 +202,13 @@ export default class GitHubHelper implements RepositoryManagementInterface {
         usernameCredentialField,
         token
       );
-      commandToPull = commandToSetCredentials + ' && ' + commandToPull;
+      let commandToSetUser = GitHubHelper.getCommandToSetUser(username, username+"@dockergithubreloader.com");
+
+      commandToPull = commandToSetCredentials + " && "+ commandToSetUser + ' && ' + commandToPull;
       let commandToClearCredentials =
         GitHubHelper.getCommandToClearCredentials();
-      commandToPull += ' && ' + commandToClearCredentials;
+      let commandToClearUser = GitHubHelper.getCommandToClearUser();
+      commandToPull += ' && ' + commandToClearCredentials + " && "+commandToClearUser;
     }
 
     let command =
@@ -240,7 +243,6 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     token: string
   ) {
     let commandToSetCredentials = '';
-    let commandToSetUser = '';
     if (!!token || !!username) {
       commandToSetCredentials +=
         "git config credential.helper '!f() { sleep 1; ";
@@ -257,28 +259,39 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       }
       commandToSetCredentials += "}; f'";
     }
-    if (!!username) {
+    return commandToSetCredentials;
+  }
+
+  static getCommandToSetUser(
+      name: string,
+      email: string,
+  ) {
+    let commandToSetUser = '';
+    if (!!email) {
       commandToSetUser += "git config credential.user '!f() { sleep 1; ";
       //TODO this can be done nicer
       // but we will move the credentials into env variables https://git-scm.com/docs/gitcredentials#_custom_helpers
-      commandToSetCredentials +=
-        'echo "' +
-        'email' +
-        '=' +
-        username +
-        '@dockergithubreloader.de' +
-        '"; ';
+      commandToSetUser +=
+          'echo "' +
+          'email' +
+          '=' +
+          email +
+          '"; ';
 
-      commandToSetCredentials += 'echo "' + 'name' + '=' + username + '"; ';
-      commandToSetCredentials += "}; f'";
+      commandToSetUser += 'echo "' + 'name' + '=' + name + '"; ';
+      commandToSetUser += "}; f'";
     }
-    return commandToSetCredentials + ' && ' + commandToSetUser;
+    return commandToSetUser;
   }
 
   static getCommandToClearCredentials() {
     let commandToClear = '';
     commandToClear += 'git config --unset credential.helper';
-    commandToClear += ' && ';
+    return commandToClear;
+  }
+
+  static getCommandToClearUser() {
+    let commandToClear = '';
     commandToClear += 'git config --unset user.email';
     commandToClear += ' && ';
     commandToClear += 'git config --unset user.name';
