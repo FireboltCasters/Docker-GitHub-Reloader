@@ -1,9 +1,8 @@
-import EnvHelper from "./EnvHelper";
+import EnvHelper from './EnvHelper';
 
 const {exec, spawn} = require('child_process');
 
 export default class ExecHelper {
-
   private readonly env: EnvHelper;
 
   constructor(env: EnvHelper) {
@@ -31,42 +30,54 @@ export default class ExecHelper {
     });
   }
 
-  private addPreCommands(command: string){
+  private addPreCommands(command: string) {
     //lets add exports for proxies
     let preProxyCommand = this.getProxyPreCommand();
-    if(!!preProxyCommand){
-      command = preProxyCommand + " && "+command;
+    if (!!preProxyCommand) {
+      command = preProxyCommand + ' && ' + command;
     }
 
     //lets add custom commands before all
     let preCommand = this.env.getCustomCommandPreCommands();
-    if(!!preCommand){
-      command = preCommand + " && "+command;
+    if (!!preCommand) {
+      command = preCommand + ' && ' + command;
     }
     return command;
   }
 
-
-  private getProxyPreCommand(){
+  private getProxyPreCommand() {
     let httpProxy = this.env.getHttpProxy();
     let httpsProxy = this.env.getHttpsProxy();
     let noProxy = this.env.getNoProxy();
-    if(!!httpProxy || !!httpsProxy || !!noProxy){
-      let preProxyCommand = "";
-      if(!!httpProxy){
-        preProxyCommand += 'export HTTP_PROXY="'+httpProxy+'" && export http_proxy="'+httpProxy+'" && ';
+    if (!!httpProxy || !!httpsProxy || !!noProxy) {
+      let preProxyCommand = '';
+      if (!!httpProxy) {
+        preProxyCommand +=
+          'export HTTP_PROXY="' +
+          httpProxy +
+          '" && export http_proxy="' +
+          httpProxy +
+          '" && ';
       }
-      if(!!httpsProxy){
-        preProxyCommand += 'export HTTPS_PROXY="'+httpsProxy+'" && export https_proxy="'+httpsProxy+'" && ';
+      if (!!httpsProxy) {
+        preProxyCommand +=
+          'export HTTPS_PROXY="' +
+          httpsProxy +
+          '" && export https_proxy="' +
+          httpsProxy +
+          '" && ';
       }
-      if(!!noProxy){
-        preProxyCommand += 'export NO_PROXY="'+noProxy+'" && export no_proxy="'+noProxy+'" && ';
+      if (!!noProxy) {
+        preProxyCommand +=
+          'export NO_PROXY="' +
+          noProxy +
+          '" && export no_proxy="' +
+          noProxy +
+          '" && ';
       }
-      preProxyCommand = preProxyCommand.substr(0, -(" && ".length)); //remove the additional connect
+      preProxyCommand = preProxyCommand.substr(0, -' && '.length); //remove the additional connect
       return preProxyCommand;
     }
     return null;
   }
-
-
 }
