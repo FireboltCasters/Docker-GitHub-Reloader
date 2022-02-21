@@ -21,7 +21,7 @@ export default class Reloader {
       let logger = new LogHelper(envHelper);
       Reloader.logger = logger;
       Reloader.logger.info('Welcome');
-      Reloader.execHelper = new ExecHelper(env);
+      Reloader.execHelper = new ExecHelper(envHelper);
       Reloader.repositoryHelper = new RepositoryManagementHelper(
         envHelper,
         logger
