@@ -195,7 +195,14 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     logger.debug('username: ', username);
 
     await GitHubHelper.clearCredentialsAndUser(path_to_github_project, logger);
-    await GitHubHelper.setCredentialsAndUser(commit_id, path_to_github_project, token, username, usernameCredentialField, logger);
+    await GitHubHelper.setCredentialsAndUser(
+      commit_id,
+      path_to_github_project,
+      token,
+      username,
+      usernameCredentialField,
+      logger
+    );
 
     let commandToPull = 'git pull';
 
@@ -204,7 +211,10 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       commandToPull;
     try {
       let result = await Reloader.execHelper.exec(command);
-      await GitHubHelper.clearCredentialsAndUser(path_to_github_project, logger);
+      await GitHubHelper.clearCredentialsAndUser(
+        path_to_github_project,
+        logger
+      );
       logger.info('-- pullRepo finished');
       return true;
     } catch (err) {
@@ -216,7 +226,10 @@ export default class GitHubHelper implements RepositoryManagementInterface {
          09feaa8..5344af0  main       -> origin/main
          */
         logger.info('-- pullRepo finished');
-        await GitHubHelper.clearCredentialsAndUser(path_to_github_project, logger);
+        await GitHubHelper.clearCredentialsAndUser(
+          path_to_github_project,
+          logger
+        );
         return true;
       } else {
         logger.error('Okay no idea whats going on');
@@ -228,27 +241,31 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     return false;
   }
 
-  public static async setCredentialsAndUser(commit_id: any,
-                               path_to_github_project: string,
-                               token: any,
-                               username: any,
-                               usernameCredentialField: any,
-                               logger: LogHelper){
+  public static async setCredentialsAndUser(
+    commit_id: any,
+    path_to_github_project: string,
+    token: any,
+    username: any,
+    usernameCredentialField: any,
+    logger: LogHelper
+  ) {
     logger.debug('--- setCredentialsAndUser');
     if (!!token || !!username) {
       let commandToSetCredentials = GitHubHelper.getCommandToSetCredentials(
-          username,
-          usernameCredentialField,
-          token
+        username,
+        usernameCredentialField,
+        token
       );
       let commandToSetUser = GitHubHelper.getCommandToSetUser(
-          username,
-          username + '@dockergithubreloader.com'
+        username,
+        username + '@dockergithubreloader.com'
       );
 
       let command =
-          GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) +
-          commandToSetCredentials + " && "+commandToSetUser;
+        GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) +
+        commandToSetCredentials +
+        ' && ' +
+        commandToSetUser;
 
       try {
         let result = await Reloader.execHelper.exec(command);
@@ -266,15 +283,18 @@ export default class GitHubHelper implements RepositoryManagementInterface {
   }
 
   public static async clearCredentialsAndUser(
-                                            path_to_github_project: string,
-                                            logger: LogHelper){
+    path_to_github_project: string,
+    logger: LogHelper
+  ) {
     logger.debug('--- clearCredentialsAndUser');
     let commandToClearCredentials = GitHubHelper.getCommandToClearCredentials();
     let commandToClearUser = GitHubHelper.getCommandToClearUser();
 
     let command =
-        GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) +
-        commandToClearCredentials + " && "+commandToClearUser;
+      GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) +
+      commandToClearCredentials +
+      ' && ' +
+      commandToClearUser;
 
     try {
       let result = await Reloader.execHelper.exec(command);
