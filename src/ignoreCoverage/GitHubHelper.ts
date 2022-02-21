@@ -257,29 +257,31 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       }
       commandToSetCredentials += "}; f'";
     }
-    if(!!username){
-      commandToSetUser +=
-          "git config credential.user '!f() { sleep 1; ";
+    if (!!username) {
+      commandToSetUser += "git config credential.user '!f() { sleep 1; ";
       //TODO this can be done nicer
       // but we will move the credentials into env variables https://git-scm.com/docs/gitcredentials#_custom_helpers
-        commandToSetCredentials +=
-            'echo "' + "email" + '=' + username + "@dockergithubreloader.de" + '"; ';
-
       commandToSetCredentials +=
-          'echo "' + "name" + '=' + username + '"; ';
+        'echo "' +
+        'email' +
+        '=' +
+        username +
+        '@dockergithubreloader.de' +
+        '"; ';
+
+      commandToSetCredentials += 'echo "' + 'name' + '=' + username + '"; ';
       commandToSetCredentials += "}; f'";
     }
-    return commandToSetCredentials + " && " + commandToSetUser;
+    return commandToSetCredentials + ' && ' + commandToSetUser;
   }
 
-  static getCommandToClearCredentials(
-  ) {
-    let commandToClear = "";
-    commandToClear += "git config --unset credential.helper";
-    commandToClear += " && ";
-    commandToClear += "git config --unset user.email";
-    commandToClear += " && ";
-    commandToClear += "git config --unset user.name";
+  static getCommandToClearCredentials() {
+    let commandToClear = '';
+    commandToClear += 'git config --unset credential.helper';
+    commandToClear += ' && ';
+    commandToClear += 'git config --unset user.email';
+    commandToClear += ' && ';
+    commandToClear += 'git config --unset user.name';
     return commandToClear;
   }
 
