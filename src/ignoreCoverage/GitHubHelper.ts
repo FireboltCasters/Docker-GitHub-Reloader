@@ -195,29 +195,38 @@ export default class GitHubHelper implements RepositoryManagementInterface {
 
     let commandToPull = 'git pull';
 
+    let ENV_FIELD_TOKEN = "GIT_HELPER_TOKEN";
+    let ENV_FIELD_USERNAME = "GIT_HELPER_USERNAME";
+
     if (!!token) {
-      let commandToSetCredentials = '';
+      let commandToSetCredentials = 'export '+ENV_FIELD_TOKEN+'='+token+" && ";
       //TODO this can be done nicer
       if (!!username) {
         //
-        commandToSetCredentials =
+        commandToSetCredentials += 'export '+ENV_FIELD_USERNAME+'='+username+" && ";
+        commandToSetCredentials +=
           "git config credential.helper '!f() { sleep 1; " +
           'echo "' +
           usernameCredentialField +
           '=' +
-          username +
+          "$(cat $"+ENV_FIELD_USERNAME+")" +
           '"; ' +
           'echo "password=' +
-          token +
+          "$(cat $"+ENV_FIELD_TOKEN+")" +
           '"; }; ' +
           "f'";
       } else {
         //https://stackoverflow.com/questions/11506124/how-to-enter-command-with-password-for-git-pull
         //git -c credential.helper='!f() { echo "password=mysecretpassword"; }; f' fetch origin
-        commandToSetCredentials =
-          'git -c credential.helper=\'!f() { echo "password=' +
-          token +
-          '"; }; f\' fetch origin';
+
+        // but we will move the credentials into env variables https://git-scm.com/docs/gitcredentials#_custom_helpers
+
+        commandToSetCredentials +=
+            "git config credential.helper '!f() { sleep 1; " +
+            'echo "password=' +
+            "$(cat $"+ENV_FIELD_TOKEN+")" +
+            '"; }; ' +
+            "f'";
       }
       commandToPull = commandToSetCredentials + ' && ' + commandToPull;
     }
