@@ -195,42 +195,11 @@ export default class GitHubHelper implements RepositoryManagementInterface {
 
     let commandToPull = 'git pull';
 
-    let ENV_FIELD_TOKEN = 'GIT_HELPER_TOKEN';
-    let ENV_FIELD_USERNAME = 'GIT_HELPER_USERNAME';
-
-    if (!!token) {
-      let commandToSetCredentials =
-        'export ' + ENV_FIELD_TOKEN + '=' + token + ' && ';
-      //TODO this can be done nicer
-      if (!!username) {
-        //
-        commandToSetCredentials +=
-          'export ' + ENV_FIELD_USERNAME + '=' + username + ' && ';
-        commandToSetCredentials +=
-          "git config credential.helper '!f() { sleep 1; " +
-          'echo "' +
-          usernameCredentialField +
-          '=' +
-          "$"+ENV_FIELD_USERNAME+"" +
-          '"; ' +
-          'echo "password=' +
-          "$"+ENV_FIELD_TOKEN+"" +
-          '"; }; ' +
-          "f'";
-      } else {
-        //https://stackoverflow.com/questions/11506124/how-to-enter-command-with-password-for-git-pull
-        //git -c credential.helper='!f() { echo "password=mysecretpassword"; }; f' fetch origin
-
-        // but we will move the credentials into env variables https://git-scm.com/docs/gitcredentials#_custom_helpers
-
-        commandToSetCredentials +=
-            "git config credential.helper '!f() { sleep 1; " +
-            'echo "password=' +
-            "$"+ENV_FIELD_TOKEN+"" +
-            '"; }; ' +
-            "f'";
-      }
+    if (!!token || !!username) {
+      let commandToSetCredentials = GitHubHelper.getCommandToSetCredentials(username, usernameCredentialField, token);
       commandToPull = commandToSetCredentials + ' && ' + commandToPull;
+      let commandToClearCredentials = GitHubHelper.getCommandToSetCredentials("", usernameCredentialField, "");
+      commandToPull += " && "+commandToClearCredentials;
     }
 
     let command =
@@ -257,6 +226,31 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     }
     logger.error('-- pullRepo failed');
     return false;
+  }
+
+  static getCommandToSetCredentials(username:string, usernameCredentialField: string, token: string){
+    let commandToSetCredentials = "";
+    if (!!token || !!username) {
+      commandToSetCredentials += "git config credential.helper '!f() { sleep 1; ";
+      //TODO this can be done nicer
+      // but we will move the credentials into env variables https://git-scm.com/docs/gitcredentials#_custom_helpers
+      if (!!username) {
+        commandToSetCredentials += 'echo "' +
+            usernameCredentialField +
+            '=' +
+            username +
+            '"; '
+      }
+      if (!!token) {
+        //https://stackoverflow.com/questions/11506124/how-to-enter-command-with-password-for-git-pull
+        //git -c credential.helper='!f() { echo "password=mysecretpassword"; }; f' fetch origin
+        commandToSetCredentials += 'echo "password=' +
+            token +
+            '"; ';
+      }
+      commandToSetCredentials += "}; f'";
+    }
+    return commandToSetCredentials;
   }
 
   public static getCommandToGitProjectRaw(path_to_git_project: string): string {
