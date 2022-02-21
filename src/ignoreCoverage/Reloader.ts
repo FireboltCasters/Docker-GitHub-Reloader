@@ -12,7 +12,7 @@ export default class Reloader {
   private static repositoryHelper: RepositoryManagementHelper;
   private static dockerHelper: DockerHelper;
   private static updateJob: any;
-  private static logger: LogHelper;
+  public static logger: LogHelper;
   static execHelper: ExecHelper;
 
   static async start(env: any) {
