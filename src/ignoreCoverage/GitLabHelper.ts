@@ -23,16 +23,16 @@ export default class GitLabHelper implements RepositoryManagementInterface {
   constructor(env: EnvHelper, logger: LogHelper) {
     this.logger = logger;
     this.logger.debug('USING GITLAB HELPER');
-    this.path_to_github_project = env.getFolderPathToGitHubProject();
+    this.path_to_github_project = env.getFolderPathToRepositoyProject();
 
-    this.github_owner = env.getGitHubOwnerName();
-    this.github_repo = env.getGitHubRepoName();
+    this.github_owner = env.getRepositoryOwnerName();
+    this.github_repo = env.getRepositoryName();
 
     this.git_token = env.getGitHubAuthToken();
     this.git_username = env.getGitAuthUsername();
     this.git_fieldname_credential_user =
       env.getGitUsernameFieldName() || 'username';
-    this.github_branch = env.getGitHubBranchName();
+    this.github_branch = env.getRepositoryBranchName();
     this.base_url = env.getRepositoryManagementBaseURL();
   }
 

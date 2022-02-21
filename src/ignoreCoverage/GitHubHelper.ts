@@ -9,6 +9,7 @@ import LogHelper from './LogHelper';
 
 export default class GitHubHelper implements RepositoryManagementInterface {
   static ENV_NAME = 'GitHub';
+  static DEFAULT_BRANCH = "main";
 
   static MOCK = false;
 
@@ -26,16 +27,16 @@ export default class GitHubHelper implements RepositoryManagementInterface {
 
   constructor(env: EnvHelper, logger: LogHelper) {
     this.logger = logger;
-    this.path_to_github_project = env.getFolderPathToGitHubProject();
+    this.path_to_github_project = env.getFolderPathToRepositoyProject();
 
-    this.github_owner = env.getGitHubOwnerName();
-    this.github_repo = env.getGitHubRepoName();
+    this.github_owner = env.getRepositoryOwnerName();
+    this.github_repo = env.getRepositoryName();
 
     this.git_token = env.getGitHubAuthToken();
     this.git_username = env.getGitAuthUsername();
     this.git_fieldname_credential_user =
       env.getGitUsernameFieldName() || 'username';
-    this.github_branch = env.getGitHubBranchName();
+    this.github_branch = env.getRepositoryBranchName();
 
     let userAgent = Reloader.agent;
     this.logger.debug(userAgent);
