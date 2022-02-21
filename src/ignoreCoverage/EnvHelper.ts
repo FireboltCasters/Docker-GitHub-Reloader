@@ -79,7 +79,6 @@ export default class EnvHelper {
     return this.getEnvValue(EnvHelper.FOLDER_PATH_TO_PROJECT);
   }
 
-
   getRepositoryManagementName(): any {
     return (
       this.getEnvValue(EnvHelper.REPOSITORY_MANAGEMENT) || GitHubHelper.ENV_NAME
@@ -119,7 +118,9 @@ export default class EnvHelper {
   }
 
   getRepositoryBranchName() {
-    return this.getEnvValue(EnvHelper.GIT_BRANCH)  || GitHubHelper.DEFAULT_BRANCH;
+    return (
+      this.getEnvValue(EnvHelper.GIT_BRANCH) || GitHubHelper.DEFAULT_BRANCH
+    );
   }
 
   getFolderPathToRepositoyProject() {

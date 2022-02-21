@@ -9,7 +9,7 @@ import LogHelper from './LogHelper';
 
 export default class GitHubHelper implements RepositoryManagementInterface {
   static ENV_NAME = 'GitHub';
-  static DEFAULT_BRANCH = "main";
+  static DEFAULT_BRANCH = 'main';
 
   static MOCK = false;
 
