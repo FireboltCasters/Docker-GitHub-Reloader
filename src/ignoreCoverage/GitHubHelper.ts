@@ -209,10 +209,10 @@ export default class GitHubHelper implements RepositoryManagementInterface {
           'echo "' +
           usernameCredentialField +
           '=' +
-          "$(cat $"+ENV_FIELD_USERNAME+")" +
+          "$"+ENV_FIELD_USERNAME+"" +
           '"; ' +
           'echo "password=' +
-          "$(cat $"+ENV_FIELD_TOKEN+")" +
+          "$"+ENV_FIELD_TOKEN+"" +
           '"; }; ' +
           "f'";
       } else {
@@ -224,7 +224,7 @@ export default class GitHubHelper implements RepositoryManagementInterface {
         commandToSetCredentials +=
             "git config credential.helper '!f() { sleep 1; " +
             'echo "password=' +
-            "$(cat $"+ENV_FIELD_TOKEN+")" +
+            "$"+ENV_FIELD_TOKEN+"" +
             '"; }; ' +
             "f'";
       }
