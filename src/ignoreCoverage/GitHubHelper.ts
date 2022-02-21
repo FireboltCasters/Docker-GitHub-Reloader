@@ -338,13 +338,9 @@ export default class GitHubHelper implements RepositoryManagementInterface {
   static getCommandToSetUser(name: string, email: string) {
     let commandToSetUser = '';
     if (!!email) {
-      commandToSetUser += "git config credential.user '!f() { sleep 1; ";
-      //TODO this can be done nicer
-      // but we will move the credentials into env variables https://git-scm.com/docs/gitcredentials#_custom_helpers
-      commandToSetUser += 'echo "' + 'email' + '=' + email + '"; ';
-
-      commandToSetUser += 'echo "' + 'name' + '=' + name + '"; ';
-      commandToSetUser += "}; f'";
+      commandToSetUser += 'git config user.name "'+name+'"';
+      commandToSetUser += " && ";
+      commandToSetUser += 'git config user.email "'+email+'"';
     }
     return commandToSetUser;
   }
