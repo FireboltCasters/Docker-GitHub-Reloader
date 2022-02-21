@@ -3,6 +3,7 @@ import RepositoryManagementHelper from './RepositoryManagementHelper';
 import DockerHelper from './DockerHelper';
 import EnvHelper from './EnvHelper';
 import LogHelper from './LogHelper';
+import ExecHelper from "./ExecHelper";
 
 export default class Reloader {
   public static agent = 'docker-github-reloader v0.0.4';
@@ -12,6 +13,7 @@ export default class Reloader {
   private static dockerHelper: DockerHelper;
   private static updateJob: any;
   private static logger: LogHelper;
+  static execHelper: ExecHelper;
 
   static async start(env: any) {
     try {
@@ -19,6 +21,7 @@ export default class Reloader {
       let logger = new LogHelper(envHelper);
       Reloader.logger = logger;
       Reloader.logger.info('Welcome');
+      Reloader.execHelper = new ExecHelper(env);
       Reloader.repositoryHelper = new RepositoryManagementHelper(
         envHelper,
         logger
@@ -52,7 +55,7 @@ export default class Reloader {
       } else {
         Reloader.logger.error(
           '[ERROR] No Valid ' +
-            EnvHelper.SCHEDULE_TIME_CHECK_FIELD +
+            EnvHelper.SCHEDULE_TIME_CHECK +
             ' was given'
         );
       }

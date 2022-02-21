@@ -3,24 +3,30 @@ import GitLabHelper from './GitLabHelper';
 
 export default class EnvHelper {
   static readonly LOG_LEVEL = 'LOG_LEVEL';
-  static readonly SCHEDULE_TIME_CHECK_FIELD = 'SCHEDULE_TIME_CHECK';
-  static readonly SCHEDULE_TIME_UPDATE_FIELD = 'SCHEDULE_TIME_STATIC_UPDATE'; //TODO implement logic
-  static readonly REPOSITORY_MANAGEMENT_FIELD = 'REPOSITORY_MANAGEMENT';
-  static readonly REPOSITORY_MANAGEMENT_BASE_URL_FIELD =
+  static readonly SCHEDULE_TIME_CHECK = 'SCHEDULE_TIME_CHECK';
+  static readonly SCHEDULE_TIME_UPDATE = 'SCHEDULE_TIME_STATIC_UPDATE'; //TODO implement logic
+  static readonly REPOSITORY_MANAGEMENT = 'REPOSITORY_MANAGEMENT';
+  static readonly REPOSITORY_MANAGEMENT_BASE_URL =
     'REPOSITORY_MANAGEMENT_BASE_URL';
-  static readonly GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD =
+  static readonly GIT_AUTH_PERSONAL_ACCESS_TOKEN =
     'GIT_AUTH_PERSONAL_ACCESS_TOKEN';
-  static readonly GIT_AUTH_USERNAME_FIELD = 'GIT_AUTH_USERNAME';
+  static readonly GIT_AUTH_USERNAME = 'GIT_AUTH_USERNAME';
   static readonly GIT_AUTH_CREDENTIAL_FIELDNAME_USER =
     'GIT_AUTH_CREDENTIAL_FIELDNAME_USER';
-  static readonly GIT_PROJECT_OWNER_FIELD = 'GIT_PROJECT_OWNER';
-  static readonly GIT_PROJECT_REPO_FIELD = 'GIT_PROJECT_REPO';
-  static readonly GIT_BRANCH_FIELD = 'GIT_BRANCH';
-  static readonly FOLDER_PATH_TO_PROJECT_FIELD = 'FOLDER_PATH_TO_PROJECT';
-  static readonly FOLDER_PATH_TO_GIT_REPO_FIELD = 'FOLDER_PATH_TO_GIT_REPO';
-  static readonly FOLDER_PATH_TO_DOCKER_PROJECT_FIELD =
+  static readonly GIT_PROJECT_OWNER = 'GIT_PROJECT_OWNER';
+  static readonly GIT_PROJECT_REPO = 'GIT_PROJECT_REPO';
+  static readonly GIT_BRANCH = 'GIT_BRANCH';
+  static readonly FOLDER_PATH_TO_PROJECT = 'FOLDER_PATH_TO_PROJECT';
+  static readonly FOLDER_PATH_TO_GIT_REPO = 'FOLDER_PATH_TO_GIT_REPO';
+  static readonly FOLDER_PATH_TO_DOCKER_PROJECT =
     'FOLDER_PATH_TO_DOCKER_PROJECT';
-  static readonly DOCKER_PROJECT_PREPARE_FIELD = 'DOCKER_PROJECT_PREPARE';
+
+  static readonly CUSTOM_COMMAND_PRE_COMMANDS = "CUSTOM_COMMAND_PRE_COMMANDS";
+  static readonly HTTP_PROXY = "HTTP_PROXY";
+  static readonly HTTPS_PROXY= "HTTPS_PROXY";
+  static readonly NO_PROXY= "NO_PROXY";
+
+  static readonly DOCKER_PROJECT_PREPARE = 'DOCKER_PROJECT_PREPARE'; // boolean
 
   static readonly CUSTOM_COMMAND_DOCKER_STOP_FIELD =
     'CUSTOM_COMMAND_DOCKER_STOP'; //TODO implement logic
@@ -31,35 +37,34 @@ export default class EnvHelper {
   static readonly CUSTOM_COMMAND_DOCKER_START_FIELD =
     'CUSTOM_COMMAND_DOCKER_START'; //TODO implement logic
 
-  private readonly env = {
-    [EnvHelper.LOG_LEVEL]: null,
-    [EnvHelper.SCHEDULE_TIME_CHECK_FIELD]: null,
-    [EnvHelper.SCHEDULE_TIME_UPDATE_FIELD]: null,
-    [EnvHelper.REPOSITORY_MANAGEMENT_FIELD]: null,
-    [EnvHelper.REPOSITORY_MANAGEMENT_BASE_URL_FIELD]: null,
-    [EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD]: null,
-    [EnvHelper.GIT_AUTH_USERNAME_FIELD]: null,
-    [EnvHelper.GIT_AUTH_CREDENTIAL_FIELDNAME_USER]: null,
-    [EnvHelper.GIT_PROJECT_OWNER_FIELD]: null,
-    [EnvHelper.GIT_PROJECT_REPO_FIELD]: null,
-    [EnvHelper.GIT_BRANCH_FIELD]: null,
-    [EnvHelper.FOLDER_PATH_TO_PROJECT_FIELD]: null,
-    [EnvHelper.FOLDER_PATH_TO_GIT_REPO_FIELD]: null,
-    [EnvHelper.FOLDER_PATH_TO_DOCKER_PROJECT_FIELD]: null,
-    [EnvHelper.DOCKER_PROJECT_PREPARE_FIELD]: null,
-
-    [EnvHelper.CUSTOM_COMMAND_DOCKER_STOP_FIELD]: null,
-    [EnvHelper.CUSTOM_COMMAND_DOCKER_REMOVE_FIELD]: null,
-    [EnvHelper.CUSTOM_COMMAND_DOCKER_REBUILD_FIELD]: null,
-    [EnvHelper.CUSTOM_COMMAND_DOCKER_START_FIELD]: null,
-  };
+  private readonly env: any;
 
   constructor(env: any) {
     this.env = env || {};
   }
 
+  private getEnvValue(key: string): string | undefined{
+    return this.env[key];
+  }
+
   getLogLevel() {
-    return this.env[EnvHelper.LOG_LEVEL] || undefined;
+    return this.getEnvValue(EnvHelper.LOG_LEVEL) ;
+  }
+
+  getCustomCommandPreCommands(){
+    return this.getEnvValue(EnvHelper.CUSTOM_COMMAND_PRE_COMMANDS) ;
+  }
+
+  getHttpProxy(){
+    return this.getEnvValue(EnvHelper.HTTP_PROXY) ;
+  }
+
+  getHttpsProxy(){
+    return this.getEnvValue(EnvHelper.HTTPS_PROXY) || this.getHttpProxy();
+  }
+
+  getNoProxy(){
+    return this.getEnvValue(EnvHelper.NO_PROXY) ;
   }
 
   /**
@@ -67,22 +72,22 @@ export default class EnvHelper {
    */
 
   getScheduleTimeForChecks() {
-    return this.env[EnvHelper.SCHEDULE_TIME_CHECK_FIELD] || '0 */5 * * * *';
+    return this.getEnvValue(EnvHelper.SCHEDULE_TIME_CHECK) || '0 */5 * * * *';
   }
 
   getFolderPathToProject() {
-    return this.env[EnvHelper.FOLDER_PATH_TO_PROJECT_FIELD] || undefined;
+    return this.getEnvValue(EnvHelper.FOLDER_PATH_TO_PROJECT) ;
   }
 
   getRepositoryManagementName(): any {
     return (
-      this.env[EnvHelper.REPOSITORY_MANAGEMENT_FIELD] || GitHubHelper.ENV_NAME
+      this.getEnvValue(EnvHelper.REPOSITORY_MANAGEMENT) || GitHubHelper.ENV_NAME
     );
   }
 
   getRepositoryManagementBaseURL(): any {
     return (
-      this.env[EnvHelper.REPOSITORY_MANAGEMENT_BASE_URL_FIELD] || undefined
+      this.getEnvValue(EnvHelper.REPOSITORY_MANAGEMENT_BASE_URL)
     );
   }
 
@@ -92,16 +97,16 @@ export default class EnvHelper {
 
   getGitHubAuthToken() {
     return (
-      this.env[EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD] || undefined
+      this.getEnvValue(EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN)
     );
   }
 
   getGitAuthUsername() {
-    return this.env[EnvHelper.GIT_AUTH_USERNAME_FIELD] || undefined;
+    return this.getEnvValue(EnvHelper.GIT_AUTH_USERNAME) ;
   }
 
   getGitUsernameFieldName() {
-    return this.env[EnvHelper.GIT_AUTH_CREDENTIAL_FIELDNAME_USER] || undefined;
+    return this.getEnvValue(EnvHelper.GIT_AUTH_CREDENTIAL_FIELDNAME_USER) ;
   }
 
   /**
@@ -109,20 +114,20 @@ export default class EnvHelper {
    */
 
   getGitHubOwnerName() {
-    return this.env[EnvHelper.GIT_PROJECT_OWNER_FIELD];
+    return this.getEnvValue(EnvHelper.GIT_PROJECT_OWNER);
   }
 
   getGitHubRepoName() {
-    return this.env[EnvHelper.GIT_PROJECT_REPO_FIELD];
+    return this.getEnvValue(EnvHelper.GIT_PROJECT_REPO);
   }
 
   getGitHubBranchName() {
-    return this.env[EnvHelper.GIT_BRANCH_FIELD] || undefined || 'main';
+    return this.getEnvValue(EnvHelper.GIT_BRANCH)  || 'main';
   }
 
   getFolderPathToGitHubProject() {
     return (
-      this.env[EnvHelper.FOLDER_PATH_TO_DOCKER_PROJECT_FIELD] ||
+      this.getEnvValue(EnvHelper.FOLDER_PATH_TO_DOCKER_PROJECT) ||
       this.getFolderPathToProject()
     );
   }
@@ -133,12 +138,12 @@ export default class EnvHelper {
 
   getFolderPathToDockerProject() {
     return (
-      this.env[EnvHelper.FOLDER_PATH_TO_DOCKER_PROJECT_FIELD] ||
+      this.getEnvValue(EnvHelper.FOLDER_PATH_TO_DOCKER_PROJECT) ||
       this.getFolderPathToProject()
     );
   }
 
   getPrepareDockerProject(): boolean {
-    return this.env[EnvHelper.DOCKER_PROJECT_PREPARE_FIELD] === 'true' || true; //TODO remove default Value
+    return this.getEnvValue(EnvHelper.DOCKER_PROJECT_PREPARE) === 'true' || true; //TODO remove default Value
   }
 }

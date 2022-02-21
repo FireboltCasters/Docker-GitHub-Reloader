@@ -1,8 +1,19 @@
+import EnvHelper from "./EnvHelper";
+
 const {exec, spawn} = require('child_process');
 
 export default class ExecHelper {
-  static async exec(command: string) {
-    //TODO
+
+  private readonly env: EnvHelper;
+
+  constructor(env: EnvHelper) {
+    this.env = env;
+  }
+
+  async exec(command: string) {
+    command = this.addPreCommands(command);
+
+    //TODO maybe we can add this
     //https://stackoverflow.com/questions/10232192/exec-display-stdout-live
 
     return new Promise((resolve, reject) => {
@@ -19,4 +30,43 @@ export default class ExecHelper {
       });
     });
   }
+
+  private addPreCommands(command: string){
+    //lets add exports for proxies
+    let preProxyCommand = this.getProxyPreCommand();
+    if(!!preProxyCommand){
+      command = preProxyCommand + " && "+command;
+    }
+
+    //lets add custom commands before all
+    let preCommand = this.env.getCustomCommandPreCommands();
+    if(!!preCommand){
+      command = preCommand + " && "+command;
+    }
+    return command;
+  }
+
+
+  private getProxyPreCommand(){
+    let httpProxy = this.env.getHttpProxy();
+    let httpsProxy = this.env.getHttpsProxy();
+    let noProxy = this.env.getNoProxy();
+    if(!!httpProxy || !!httpsProxy || !!noProxy){
+      let preProxyCommand = "";
+      if(!!httpProxy){
+        preProxyCommand += 'export HTTP_PROXY="'+httpProxy+'" && export http_proxy="'+httpProxy+'" && ';
+      }
+      if(!!httpsProxy){
+        preProxyCommand += 'export HTTPS_PROXY="'+httpsProxy+'" && export https_proxy="'+httpsProxy+'" && ';
+      }
+      if(!!noProxy){
+        preProxyCommand += 'export NO_PROXY="'+noProxy+'" && export no_proxy="'+noProxy+'" && ';
+      }
+      preProxyCommand = preProxyCommand.substr(0, -(" && ".length)); //remove the additional connect
+      return preProxyCommand;
+    }
+    return null;
+  }
+
+
 }

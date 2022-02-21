@@ -141,7 +141,7 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       if (err.status === 404) {
         this.logger.error(
           'Project not found. For Private Repos set ' +
-            EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD
+            EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN
         );
       } else {
         this.logger.error(err);
@@ -225,7 +225,7 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) +
       commandToPull;
     try {
-      let result = await ExecHelper.exec(command);
+      let result = await Reloader.execHelper.exec(command);
       logger.info('-- pullRepo finished');
       return true;
     } catch (err) {
@@ -284,7 +284,7 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       GitHubHelper.getCommandToGitProjectRaw(path_to_github_project) +
       commandToGetInformation;
     try {
-      let result = await ExecHelper.exec(command);
+      let result = await Reloader.execHelper.exec(command);
       return result;
     } catch (err) {
       logger.error(err);

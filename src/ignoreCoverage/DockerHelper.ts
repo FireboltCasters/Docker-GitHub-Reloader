@@ -1,6 +1,7 @@
 import ExecHelper from './ExecHelper';
 import EnvHelper from './EnvHelper';
 import LogHelper from './LogHelper';
+import {Reloader} from "../index";
 
 //TODO refactor to DeployManagementHelper and DeployeManagementInterface like done for GitHub and GitLab
 export default class DockerHelper {
@@ -22,7 +23,7 @@ export default class DockerHelper {
     this.logger.info('-- isDockerComposeRunning start');
     let commandToStopDocker = 'docker ps';
     try {
-      let result = await ExecHelper.exec(commandToStopDocker);
+      let result = await Reloader.execHelper.exec(commandToStopDocker);
       this.logger.debug(result);
       this.logger.info('-- isDockerComposeRunning finished');
       return true;
@@ -44,7 +45,7 @@ export default class DockerHelper {
     this.logger.info('-- stopContainer start');
     let commandToStopDocker = 'docker-compose down';
     try {
-      let result = await ExecHelper.exec(
+      let result = await Reloader.execHelper.exec(
         this.getCommandToDockerProject() + commandToStopDocker
       );
       this.logger.info('-- stopContainer finished');
@@ -85,7 +86,7 @@ export default class DockerHelper {
     this.logger.info('-- startContainer start');
     let commandToStopDocker = 'docker-compose up --build -d';
     try {
-      let result = await ExecHelper.exec(
+      let result = await Reloader.execHelper.exec(
         this.getCommandToDockerProject() + commandToStopDocker
       );
       this.logger.info('-- startContainer finished');
@@ -112,7 +113,7 @@ export default class DockerHelper {
     this.logger.info('-- removeContainer start');
     let commandToRemoveContainer = 'docker-compose rm -f';
     try {
-      let result = await ExecHelper.exec(
+      let result = await Reloader.execHelper.exec(
         this.getCommandToDockerProject() + commandToRemoveContainer
       );
       this.logger.info('-- removeContainer finished');
@@ -137,7 +138,7 @@ export default class DockerHelper {
     this.logger.info('-- rebuildImage start');
     let commandToRemoveContainer = 'docker-compose build --no-cache --force-rm';
     try {
-      let result = await ExecHelper.exec(
+      let result = await Reloader.execHelper.exec(
         this.getCommandToDockerProject() + commandToRemoveContainer
       );
       this.logger.info('-- rebuildImage finished');
@@ -164,7 +165,7 @@ export default class DockerHelper {
     this.logger.info('-- dockerPull start');
     let commandToRemoveContainer = 'docker-compose pull';
     try {
-      let result = await ExecHelper.exec(
+      let result = await Reloader.execHelper.exec(
         this.getCommandToDockerProject() + commandToRemoveContainer
       );
       this.logger.info('-- dockerPull finished');

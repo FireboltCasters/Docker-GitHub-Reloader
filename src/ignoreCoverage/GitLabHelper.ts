@@ -1,7 +1,4 @@
 import EnvHelper from './EnvHelper';
-import {Octokit} from '@octokit/rest';
-// @ts-ignore
-import myPackage from '../../package.json';
 import RepositoryManagementInterface from './RepositoryManagementInterface';
 import GitHubHelper from './GitHubHelper';
 import axios from 'axios';
@@ -118,7 +115,7 @@ export default class GitLabHelper implements RepositoryManagementInterface {
     } else {
       this.logger.error(
         'No Matching project found. Consider for adding a ' +
-          EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN_FIELD
+          EnvHelper.GIT_AUTH_PERSONAL_ACCESS_TOKEN
       );
     }
 
