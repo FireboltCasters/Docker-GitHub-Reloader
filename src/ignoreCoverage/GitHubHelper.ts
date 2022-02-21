@@ -204,9 +204,9 @@ export default class GitHubHelper implements RepositoryManagementInterface {
       );
       commandToPull = commandToSetCredentials + ' && ' + commandToPull;
       let commandToClearCredentials = GitHubHelper.getCommandToSetCredentials(
-        '',
+        'empty',
         usernameCredentialField,
-        ''
+        'empty'
       );
       commandToPull += ' && ' + commandToClearCredentials;
     }
