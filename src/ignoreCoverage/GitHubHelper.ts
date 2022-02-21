@@ -202,13 +202,22 @@ export default class GitHubHelper implements RepositoryManagementInterface {
         usernameCredentialField,
         token
       );
-      let commandToSetUser = GitHubHelper.getCommandToSetUser(username, username+"@dockergithubreloader.com");
+      let commandToSetUser = GitHubHelper.getCommandToSetUser(
+        username,
+        username + '@dockergithubreloader.com'
+      );
 
-      commandToPull = commandToSetCredentials + " && "+ commandToSetUser + ' && ' + commandToPull;
+      commandToPull =
+        commandToSetCredentials +
+        ' && ' +
+        commandToSetUser +
+        ' && ' +
+        commandToPull;
       let commandToClearCredentials =
         GitHubHelper.getCommandToClearCredentials();
       let commandToClearUser = GitHubHelper.getCommandToClearUser();
-      commandToPull += ' && ' + commandToClearCredentials + " && "+commandToClearUser;
+      commandToPull +=
+        ' && ' + commandToClearCredentials + ' && ' + commandToClearUser;
     }
 
     let command =
@@ -262,21 +271,13 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     return commandToSetCredentials;
   }
 
-  static getCommandToSetUser(
-      name: string,
-      email: string,
-  ) {
+  static getCommandToSetUser(name: string, email: string) {
     let commandToSetUser = '';
     if (!!email) {
       commandToSetUser += "git config credential.user '!f() { sleep 1; ";
       //TODO this can be done nicer
       // but we will move the credentials into env variables https://git-scm.com/docs/gitcredentials#_custom_helpers
-      commandToSetUser +=
-          'echo "' +
-          'email' +
-          '=' +
-          email +
-          '"; ';
+      commandToSetUser += 'echo "' + 'email' + '=' + email + '"; ';
 
       commandToSetUser += 'echo "' + 'name' + '=' + name + '"; ';
       commandToSetUser += "}; f'";
