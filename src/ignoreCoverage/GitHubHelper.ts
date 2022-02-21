@@ -203,7 +203,8 @@ export default class GitHubHelper implements RepositoryManagementInterface {
         token
       );
       commandToPull = commandToSetCredentials + ' && ' + commandToPull;
-      let commandToClearCredentials = GitHubHelper.getCommandToClearCredentials();
+      let commandToClearCredentials =
+        GitHubHelper.getCommandToClearCredentials();
       commandToPull += ' && ' + commandToClearCredentials;
     }
 
