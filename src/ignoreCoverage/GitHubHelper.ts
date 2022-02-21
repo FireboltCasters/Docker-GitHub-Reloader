@@ -73,6 +73,7 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     };
 
     const latest_commit = await this.getLatestCommit();
+    Reloader.logger.debug(latest_commit)
     if (this.isDifferentCommit(latest_commit)) {
       answer.sha = latest_commit.sha;
       answer.schedule_update_time =
@@ -97,11 +98,11 @@ export default class GitHubHelper implements RepositoryManagementInterface {
   }
 
   public static isDifferentCommit(latest_commit: any, current_commit_id: any) {
+    Reloader.logger.debug("isDifferentCommit")
     if (!!latest_commit && !!latest_commit.sha) {
-      let changedCommitId = latest_commit.sha !== current_commit_id;
-      if (changedCommitId) {
-        return true;
-      }
+      Reloader.logger.debug("latest_commit.sha: "+latest_commit.sha)
+      Reloader.logger.debug("current_commit_id: "+current_commit_id)
+      return latest_commit.sha !== current_commit_id;
     }
     return false;
   }
