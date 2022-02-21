@@ -203,7 +203,8 @@ export default class GitHubHelper implements RepositoryManagementInterface {
         token
       );
       commandToPull = commandToSetCredentials + ' && ' + commandToPull;
-      let commandToClearCredentials = GitHubHelper.getCommandToClearCredentials();
+      let commandToClearCredentials =
+        GitHubHelper.getCommandToClearCredentials();
       commandToPull += ' && ' + commandToClearCredentials;
     }
 
@@ -258,9 +259,8 @@ export default class GitHubHelper implements RepositoryManagementInterface {
     return commandToSetCredentials;
   }
 
-  static getCommandToClearCredentials(
-  ) {
-    return "git config --unset credential.helper";
+  static getCommandToClearCredentials() {
+    return 'git config --unset credential.helper';
   }
 
   public static getCommandToGitProjectRaw(path_to_git_project: string): string {
