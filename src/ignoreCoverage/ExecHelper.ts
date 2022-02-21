@@ -1,5 +1,5 @@
 import EnvHelper from './EnvHelper';
-import {Reloader} from "../index";
+import {Reloader} from '../index';
 
 const {exec} = require('child_process');
 
@@ -12,7 +12,7 @@ export default class ExecHelper {
 
   async exec(command: string) {
     command = this.addPreCommands(command);
-    Reloader.logger.debug("ExecHelper exec: "+command);
+    Reloader.logger.debug('ExecHelper exec: ' + command);
 
     //TODO maybe we can add this
     //https://stackoverflow.com/questions/10232192/exec-display-stdout-live
@@ -33,7 +33,7 @@ export default class ExecHelper {
   }
 
   private addPreCommands(command: string) {
-    Reloader.logger.debug("addPreCommands");
+    Reloader.logger.debug('addPreCommands');
     //lets add exports for proxies
     let preProxyCommand = this.getProxyPreCommand();
     if (!!preProxyCommand) {
@@ -49,16 +49,18 @@ export default class ExecHelper {
   }
 
   private getProxyPreCommand() {
-    Reloader.logger.debug("getProxyPreCommand");
+    Reloader.logger.debug('getProxyPreCommand');
 
     let httpProxy = this.env.getHttpProxy();
     let httpsProxy = this.env.getHttpsProxy();
     let noProxy = this.env.getNoProxy();
     if (!!httpProxy || !!httpsProxy || !!noProxy) {
-      Reloader.logger.debug("getProxyPreCommand: true = !!httpProxy || !!httpsProxy || !!noProxy");
+      Reloader.logger.debug(
+        'getProxyPreCommand: true = !!httpProxy || !!httpsProxy || !!noProxy'
+      );
       let preProxyCommand = '';
       if (!!httpProxy) {
-        Reloader.logger.debug("getProxyPreCommand: true = !!httpProxy");
+        Reloader.logger.debug('getProxyPreCommand: true = !!httpProxy');
         preProxyCommand +=
           'export HTTP_PROXY="' +
           httpProxy +
@@ -67,7 +69,7 @@ export default class ExecHelper {
           '" && ';
       }
       if (!!httpsProxy) {
-        Reloader.logger.debug("getProxyPreCommand: true = !!httpsProxy");
+        Reloader.logger.debug('getProxyPreCommand: true = !!httpsProxy');
         preProxyCommand +=
           'export HTTPS_PROXY="' +
           httpsProxy +
@@ -76,7 +78,7 @@ export default class ExecHelper {
           '" && ';
       }
       if (!!noProxy) {
-        Reloader.logger.debug("getProxyPreCommand: true = !!noProxy");
+        Reloader.logger.debug('getProxyPreCommand: true = !!noProxy');
         preProxyCommand +=
           'export NO_PROXY="' +
           noProxy +
@@ -84,8 +86,13 @@ export default class ExecHelper {
           noProxy +
           '" && ';
       }
-      preProxyCommand = preProxyCommand.substr(0, preProxyCommand.length-(' && '.length)); //remove the additional connect
-      Reloader.logger.debug("getProxyPreCommand: preProxyCommand: "+preProxyCommand);
+      preProxyCommand = preProxyCommand.substr(
+        0,
+        preProxyCommand.length - ' && '.length
+      ); //remove the additional connect
+      Reloader.logger.debug(
+        'getProxyPreCommand: preProxyCommand: ' + preProxyCommand
+      );
       return preProxyCommand;
     }
     return null;
