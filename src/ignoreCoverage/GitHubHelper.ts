@@ -338,9 +338,9 @@ export default class GitHubHelper implements RepositoryManagementInterface {
   static getCommandToSetUser(name: string, email: string) {
     let commandToSetUser = '';
     if (!!email) {
-      commandToSetUser += 'git config user.name "'+name+'"';
-      commandToSetUser += " && ";
-      commandToSetUser += 'git config user.email "'+email+'"';
+      commandToSetUser += 'git config user.name "' + name + '"';
+      commandToSetUser += ' && ';
+      commandToSetUser += 'git config user.email "' + email + '"';
     }
     return commandToSetUser;
   }
