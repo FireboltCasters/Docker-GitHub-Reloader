@@ -211,10 +211,14 @@ export default class GitHubHelper implements RepositoryManagementInterface {
           'echo "' +
           usernameCredentialField +
           '=' +
-          "$"+ENV_FIELD_USERNAME+"" +
+          '$' +
+          ENV_FIELD_USERNAME +
+          '' +
           '"; ' +
           'echo "password=' +
-          "$"+ENV_FIELD_TOKEN+"" +
+          '$' +
+          ENV_FIELD_TOKEN +
+          '' +
           '"; }; ' +
           "f'";
       } else {
@@ -224,11 +228,13 @@ export default class GitHubHelper implements RepositoryManagementInterface {
         // but we will move the credentials into env variables https://git-scm.com/docs/gitcredentials#_custom_helpers
 
         commandToSetCredentials +=
-            "git config credential.helper '!f() { sleep 1; " +
-            'echo "password=' +
-            "$"+ENV_FIELD_TOKEN+"" +
-            '"; }; ' +
-            "f'";
+          "git config credential.helper '!f() { sleep 1; " +
+          'echo "password=' +
+          '$' +
+          ENV_FIELD_TOKEN +
+          '' +
+          '"; }; ' +
+          "f'";
       }
       commandToPull = commandToSetCredentials + ' && ' + commandToPull;
     }
