@@ -68,7 +68,6 @@ export default class Reloader {
   }
 
   private static async tryCheckForUpdates() {
-    Reloader.logger.info('tryCheckForUpdates at ' + new Date());
     if (Reloader.isCheckAllowed()) {
       Reloader.checkRunning = true;
       let updateObject = await Reloader.repositoryHelper.getNextUpdateObject();
@@ -81,13 +80,14 @@ export default class Reloader {
 
   private static isCheckAllowed() {
     if (Reloader.updateRunning) {
-      //Reloader.logger.info("- Skipped check, because an update is running");
+      Reloader.logger.info('An update is still running at ' + new Date());
       return false;
     }
     if (Reloader.checkRunning) {
-      //Reloader.logger.info("- Skipped check, because a check is already running");
+      Reloader.logger.info("- Skipped check, because a check is already running");
       return false;
     }
+    Reloader.logger.info('Start update at ' + new Date());
     return true;
   }
 

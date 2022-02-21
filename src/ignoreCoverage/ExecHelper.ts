@@ -49,18 +49,13 @@ export default class ExecHelper {
   }
 
   private getProxyPreCommand() {
-    Reloader.logger.debug('getProxyPreCommand');
 
     let httpProxy = this.env.getHttpProxy();
     let httpsProxy = this.env.getHttpsProxy();
     let noProxy = this.env.getNoProxy();
     if (!!httpProxy || !!httpsProxy || !!noProxy) {
-      Reloader.logger.debug(
-        'getProxyPreCommand: true = !!httpProxy || !!httpsProxy || !!noProxy'
-      );
       let preProxyCommand = '';
       if (!!httpProxy) {
-        Reloader.logger.debug('getProxyPreCommand: true = !!httpProxy');
         preProxyCommand +=
           'export HTTP_PROXY="' +
           httpProxy +
@@ -69,7 +64,6 @@ export default class ExecHelper {
           '" && ';
       }
       if (!!httpsProxy) {
-        Reloader.logger.debug('getProxyPreCommand: true = !!httpsProxy');
         preProxyCommand +=
           'export HTTPS_PROXY="' +
           httpsProxy +
@@ -78,7 +72,6 @@ export default class ExecHelper {
           '" && ';
       }
       if (!!noProxy) {
-        Reloader.logger.debug('getProxyPreCommand: true = !!noProxy');
         preProxyCommand +=
           'export NO_PROXY="' +
           noProxy +
@@ -90,9 +83,6 @@ export default class ExecHelper {
         0,
         preProxyCommand.length - ' && '.length
       ); //remove the additional connect
-      Reloader.logger.debug(
-        'getProxyPreCommand: preProxyCommand: ' + preProxyCommand
-      );
       return preProxyCommand;
     }
     return null;
