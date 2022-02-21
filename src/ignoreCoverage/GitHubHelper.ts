@@ -195,24 +195,30 @@ export default class GitHubHelper implements RepositoryManagementInterface {
 
     let commandToPull = 'git pull';
 
-    let ENV_FIELD_TOKEN = "GIT_HELPER_TOKEN";
-    let ENV_FIELD_USERNAME = "GIT_HELPER_USERNAME";
+    let ENV_FIELD_TOKEN = 'GIT_HELPER_TOKEN';
+    let ENV_FIELD_USERNAME = 'GIT_HELPER_USERNAME';
 
     if (!!token) {
-      let commandToSetCredentials = 'export '+ENV_FIELD_TOKEN+'='+token+" && ";
+      let commandToSetCredentials =
+        'export ' + ENV_FIELD_TOKEN + '=' + token + ' && ';
       //TODO this can be done nicer
       if (!!username) {
         //
-        commandToSetCredentials += 'export '+ENV_FIELD_USERNAME+'='+username+" && ";
+        commandToSetCredentials +=
+          'export ' + ENV_FIELD_USERNAME + '=' + username + ' && ';
         commandToSetCredentials +=
           "git config credential.helper '!f() { sleep 1; " +
           'echo "' +
           usernameCredentialField +
           '=' +
-          "$(cat $"+ENV_FIELD_USERNAME+")" +
+          '$(cat $' +
+          ENV_FIELD_USERNAME +
+          ')' +
           '"; ' +
           'echo "password=' +
-          "$(cat $"+ENV_FIELD_TOKEN+")" +
+          '$(cat $' +
+          ENV_FIELD_TOKEN +
+          ')' +
           '"; }; ' +
           "f'";
       } else {
@@ -222,11 +228,13 @@ export default class GitHubHelper implements RepositoryManagementInterface {
         // but we will move the credentials into env variables https://git-scm.com/docs/gitcredentials#_custom_helpers
 
         commandToSetCredentials +=
-            "git config credential.helper '!f() { sleep 1; " +
-            'echo "password=' +
-            "$(cat $"+ENV_FIELD_TOKEN+")" +
-            '"; }; ' +
-            "f'";
+          "git config credential.helper '!f() { sleep 1; " +
+          'echo "password=' +
+          '$(cat $' +
+          ENV_FIELD_TOKEN +
+          ')' +
+          '"; }; ' +
+          "f'";
       }
       commandToPull = commandToSetCredentials + ' && ' + commandToPull;
     }
