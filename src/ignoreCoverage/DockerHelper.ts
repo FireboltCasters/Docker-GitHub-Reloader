@@ -126,6 +126,7 @@ export default class DockerHelper {
         this.logger.info('-- deleteImages finished');
         return true;
       } else {
+        //Error response from daemon: conflict: unable to delete 6ef5e9d68484 (cannot be forced)
         this.logger.error('Okay no idea whats going on');
         this.logger.error(err);
       }
